@@ -1,0 +1,10 @@
+.mc-lists.el
+auto-save-list
+backups
+el-get
+elpa
+eshell
+org-files
+projectile*
+recentf
+smex*
