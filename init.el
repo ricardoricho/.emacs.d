@@ -111,6 +111,13 @@
 (el-get-bundle ruby-mode
   :before (setq ruby-insert-encoding-magic-comment nil))
 
+;; Ruby electric mode
+(el-get-bundle ruby-electric
+  :type svn
+  :url "http://svn.ruby-lang.org/repos/ruby/trunk/misc/"
+  :post-init (eval-after-load "ruby-mode"
+               '(add-hook 'ruby-mode-hook 'ruby-electric-mode)))
+
 ;; Move text
 (el-get-bundle move-text
   (move-text-default-bindings))
@@ -120,7 +127,10 @@
   (global-undo-tree-mode))
 
 ;; Packages without config
-(el-get 'sync '(ag ruby-electric haml-mode yaml-mode sass-mode git-timemachine))
+(el-get 'sync '(ag haml-mode yaml-mode sass-mode git-timemachine))
+
+;; Electric pair mode
+(electric-pair-mode 1)
 
 ;; Checkout
 ;; mrkkrp/typit
