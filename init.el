@@ -107,6 +107,13 @@
 (el-get-bundle coffee-mode
   :before (setq coffee-tab-width 2))
 
+;; Origami
+(el-get-bundle origami
+  :name "origami"
+  :type github
+  :pkgname "gregsexton/origami.el"
+  :feature "origami.el")
+
 ;; Ruby
 (el-get-bundle ruby-mode
   :before (setq ruby-insert-encoding-magic-comment nil))
@@ -136,6 +143,19 @@
 ;; mrkkrp/typit
 ;; yuya373/emacs-slack
 
+;; Hydras
+;; Origami hydra
+(global-set-key (kbd "C-c f")
+                (defhydra hydra-origami (:columns 2
+                                         :pre (origami-mode 1)
+                                         :post (origami-mode -1))
+                  "Origami mode"
+                  ("a" origami-toggle-all-nodes "All")
+                  ("c" origami-close-node "Close")
+                  ("n" origami-next-fold "Next")
+                  ("o" origami-open-node "Open")
+                  ("p" origami-previous-fold "Prevouis")
+                  ("t" origami-show-only-node "This")))
 ;;; Personal config
 ; Disable startup message
 (setq inhibit-startup-message t)
