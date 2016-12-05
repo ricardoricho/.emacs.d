@@ -80,7 +80,7 @@
 ;; Projectile
 (el-get-bundle projectile
   :before (setq projectile-completion-system 'ivy)
-  (projectile-global-mode))
+  (projectile-mode))
 
 ;; Projectile Rails
 (el-get-bundle projectile-rails
