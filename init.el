@@ -174,6 +174,28 @@
                   ("o" origami-open-node "Open")
                   ("p" origami-previous-fold "Prevouis")
                   ("t" origami-show-only-node "This")))
+
+
+;; Taken from aboabo
+(global-set-key (kbd "M-m")
+                (defhydra hydra-move
+                  (:body-pre (next-line)
+                   :columns 4)
+                  "move"
+                  ;; Converting M-v to V here by analogy.
+                  ("V" scroll-down-command "Scroll down")
+                  ("a" beginning-of-line "Beginning")
+                  ("b" backward-char "Backward")
+                  ("e" move-end-of-line "End")
+                  ("f" forward-char "Forward")
+                  ("g" avy-goto-char "Go to char" :bind nil)
+                  ("l" recenter-top-bottom "Center")
+                  ("m" set-mark-command "mark" :bind nil)
+                  ("n" next-line "Next")
+                  ("p" previous-line "Previous")
+                  ("v" scroll-up-command "Scroll up")
+                  ("q" nil "Quit")))
+
 ;;; Personal config
 ; Disable startup message
 (setq inhibit-startup-message t)
