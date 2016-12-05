@@ -143,6 +143,24 @@
 ;; mrkkrp/typit
 ;; yuya373/emacs-slack
 
+;; Org-mode
+(el-get-bundle org-mode
+  :after
+  (require 'org)
+  (setq org-log-done 'time
+        org-time-stamp-formats '("<%Y-%m-%d %a>" . "<%Y-%m-%d %a %H:%M:%S>")
+        org-fontify-done-headline t)
+  (custom-set-faces
+   '(org-done
+     ((t (:strike-through t))))
+   '(org-headline-done
+     ((t (:strike-through t))))))
+
+(define-key global-map (kbd "C-c o a") 'org-agenda)
+(define-key global-map (kbd "C-c o c") 'org-capture)
+(define-key global-map (kbd "C-c o l") 'org-store-link)
+
+
 ;; Hydras
 ;; Origami hydra
 (global-set-key (kbd "C-c f")
