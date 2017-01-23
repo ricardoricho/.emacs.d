@@ -45,12 +45,13 @@
   (setq ivy-use-virtual-buffers t)
   :bind (("C-x b" . ivy-switch-buffer)
          ("C-x C-f" . counsel-find-file)
-         ("C-s" . swiper))
+         ("C-s" . swiper)
+         ("M-Y" . counsel-yank-pop))
   :config
   (ivy-mode t)
   (diminish ivy-mode))
 
-;; Smex (using abo-abo github)
+;; Smex (using abo-abo github repo)
 (use-package smex
   :bind (("M-x" . smex))
   :load-path "~/.emacs.d/git/smex/"
@@ -97,8 +98,11 @@
 
 ;; Projectile
 (use-package projectile
+  :init
+  (setq projectile-completion-system 'ivy
+        projectile-mode-line '(:eval
+                               (format " [%s]" (projectile-project-name))))
   :config
-  (setq projectile-completion-system 'ivy)
   (projectile-mode))
 
 (use-package projectile-rails
@@ -274,6 +278,15 @@
   (interactive)
   (other-window -1))
 (global-set-key (kbd "C-x p") 'rae-previous-window)
+
+;; Resize window
+(defun rae-resize-window ()
+  "Make window to a certain size"
+  (interactive)
+  (let ((rae-resize (- 80 (window-width))))
+    (enlarge-window rae-resize t)))
+;; Automatic resize
+(advice-add 'other-window :after (lambda (foo) (rae-resize-window)))
 
 
 ;;; Toggle comment lines
