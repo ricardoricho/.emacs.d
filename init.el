@@ -6,44 +6,61 @@
 ;; installed packages.  Don't delete this line.  If you don't want it,
 ;; just comment it out by adding a semicolon to the start of the line.
 ;; You may delete these explanatory comments.
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
 
-(add-to-list 'load-path "~/.emacs.d/el-get/el-get")
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package))
+(setq use-package-always-ensure t)
+(require 'use-package)
+(require 'diminish)                ;; if you use :diminish
+(require 'bind-key)                ;; if you use any :bind variant
 
-(unless (require 'el-get nil 'noerror)
-  (with-current-buffer
-      (url-retrieve-synchronously
-       "https://raw.githubusercontent.com/dimitri/el-get/master/el-get-install.el")
-    (goto-char (point-max))
-    (eval-print-last-sexp)))
 
 ;; Custom Customizations
 (setq custom-file (expand-file-name "emacs-customizations.el"
                                     user-emacs-directory))
 
 ;; Packages config using el-get-bundle macro
+;; Avy jump
+(use-package avy
+  :bind (("C-0" . avy-goto-word-or-subword-1)
+         ("C-c 0" . avy-goto-char)
+         ("C-c l" . avy-goto-line)))
 
-;; Ivy / Swiper
-(el-get-bundle swiper
-  :features ivy
-  :after
-  (ivy-mode 1)
+;; Company
+(use-package company
+  :diminish company-mode
+  :config
+  (global-company-mode))
+
+(use-package dash)
+
+;; Swiper ivy-mode
+(use-package swiper
+  :load-path "~/.emacs.d/git/swiper"
+  :init
   (setq ivy-display-style 'fancy)
   (setq ivy-use-virtual-buffers t)
-  (global-set-key (kbd "C-s") 'swiper)
-  (global-set-key (kbd "C-x C-f") 'counsel-find-file)
-  (global-set-key (kbd "C-x b") 'ivy-switch-buffer))
+  :bind (("C-x b" . ivy-switch-buffer)
+         ("C-x C-f" . counsel-find-file)
+         ("C-s" . swiper))
+  :config
+  (ivy-mode t)
+  (diminish ivy-mode))
 
-;; Smex
-(el-get-bundle! smex
-  :name "smex"
-  :type github
-  :pkgname "abo-abo/smex"
-  :before (setq smex-completion-method 'ivy)
-  (global-set-key (kbd "M-x") 'smex))
+;; Smex (using abo-abo github)
+(use-package smex
+  :bind (("M-x" . smex))
+  :load-path "~/.emacs.d/git/smex/"
+  :init
+  (setq smex-completion-method 'ivy))
 
 ;; Magit
-(el-get-bundle magit
+(use-package magit
+  :bind (("M-9" . magit-status))
+  :config
   ;; Full screen magit-status taken from
   ;; http://whattheemacsd.com/setup-magit.el-01.html
   (defadvice magit-status (around magit-fullscreen activate)
@@ -55,128 +72,138 @@
     "Restores the previous window configuration and kills the magit buffer"
     (interactive)
     (kill-buffer)
-    (jump-to-register :magit-fullscreen))
-  (global-set-key (kbd "M-9") 'magit-status))
+    (jump-to-register :magit-fullscreen)))
 
-;; Avy jump
-(el-get-bundle avy
-  (global-set-key (kbd "C-0") 'avy-goto-word-or-subword-1)
-  (global-set-key (kbd "C-c 0") 'avy-goto-char)
-  (global-set-key (kbd "C-c l") 'avy-goto-line))
+(use-package git-timemachine)
+(use-package haml-mode
+  :init
+  (setq indet-tabs-mode nil)
+  :bind (("C-m" . newline-and-indent)))
 
-;; Expand region
-(el-get-bundle expand-region
-  (global-set-key (kbd "C-=") 'er/expand-region))
-
-;; Multiple cursors
-(el-get-bundle! multiple-cursors
-  (global-set-key (kbd "M-n") 'mc/mark-next-like-this))
-
-;; Yasnippets
-
-;; Hydra
-(el-get-bundle hydra)
-
-;; Projectile
-(el-get-bundle projectile
-  :before (setq projectile-completion-system 'ivy)
-  (projectile-mode))
-
-;; Projectile Rails
-(el-get-bundle projectile-rails
-  (add-hook 'projectile-mode-hook 'projectile-rails-on))
-
-;; Company
-(el-get-bundle company-mode
-  (global-company-mode))
-
-;; Flycheck
-(el-get-bundle flycheck
-  (add-hook 'after-init-hook #'global-flycheck-mode))
-
-;; Web-mode
-(el-get-bundle! web-mode
-  :before (setq web-mode-markup-indent-offset 2
-                web-mode-css-indent-offset 2
-                web-mode-code-indent-offset 2
-                webm-mode-indent-style 2)
-  :after
-  (add-to-list 'auto-mode-alist '("\\.ejs\\'" . web-mode)))
-
-;; Coffee-mode
-(el-get-bundle coffee-mode
-  :before (setq coffee-tab-width 2))
-
-;; Origami
-(el-get-bundle origami
-  :name "origami"
-  :type github
-  :pkgname "gregsexton/origami.el"
-  :feature "origami.el")
-
-;; Ruby
-(el-get-bundle ruby-mode
-  :before (setq ruby-insert-encoding-magic-comment nil))
-
-;; Ruby electric mode
-(el-get-bundle ruby-electric
-  :type svn
-  :url "http://svn.ruby-lang.org/repos/ruby/trunk/misc/"
-  :post-init (eval-after-load "ruby-mode"
-               '(add-hook 'ruby-mode-hook 'ruby-electric-mode)))
+(use-package yasnippet
+  :init
+  (setq yas-snippet-dirs '("~/.emacs.d/snippets"))
+  :config
+  (require 'yasnippet)
+  (yas-global-mode 1))
 
 ;; Move text
-(el-get-bundle move-text
+(use-package move-text
+  :config
   (move-text-default-bindings))
 
-;; Undo tree
-(el-get-bundle! undo-tree
-  (global-undo-tree-mode))
+(use-package expand-region
+  :bind (("C-=" . er/expand-region)))
 
-;; Packages without config
-(el-get 'sync '(ag haml-mode yaml-mode sass-mode git-timemachine))
+;; Projectile
+(use-package projectile
+  :config
+  (setq projectile-completion-system 'ivy)
+  (projectile-mode))
+
+(use-package projectile-rails
+  :config
+  (projectile-rails-global-mode))
+
+;; ;; Web-mode
+(use-package web-mode
+  :mode "\\.ejs\\'"
+  :init
+  (setq web-mode-markup-indent-offset 2
+        web-mode-css-indent-offset 2
+        web-mode-code-indent-offset 2
+        webm-mode-indent-style 2))
+
+
+;; Coffee-mode
+(use-package coffee-mode
+  :init
+  (setq coffee-tab-width 2))
+
+;; Ruby
+(use-package ruby-mode
+  :mode "\\.rb\\'"
+  :init
+  (setq ruby-insert-encoding-magic-comment nil))
+
+(use-package rvm
+  :config
+  (rvm-use-default)
+  (add-hook 'ruby-mode-hook
+            (lambda () (rvm-activate-corresponding-ruby))))
+
+(use-package rspec-mode
+  :config
+  (defadvice rspec-compile (around rspec-compile-around)
+    "Use BASH shell for running the specs fo ZSH issues."
+    (let ((shell-file-name "/bin/bash"))
+      ad-do-it))
+  (ad-activate 'rspec-compile))
+
+;; ;; Ruby Bundler
+;; (el-get-bundle! bundler)
+
+;; ;; Undo tree
+;; (el-get-bundle! undo-tree
+;;   (global-undo-tree-mode))
+
+;; ;; Packages without config
+;; (el-get 'sync '(ag haml-mode yaml-mode sass-mode git-timemachine))
+(use-package ag)
+(use-package yaml-mode)
+(use-package indent-tools
+  :bind (("C-c >" . indent-tools-hydra/body)))
+
+(use-package sass-mode)
 
 ;; Electric pair mode
 (electric-pair-mode 1)
 
-;; Checkout
-;; mrkkrp/typit
-;; yuya373/emacs-slack
+;; ;; Checkout
+;; ;; mrkkrp/typit
+;; ;; yuya373/emacs-slack
 
-;; Org-mode
-(el-get-bundle org-mode
-  :after
-  (require 'org)
+;; ;; Org-mode
+(use-package org
+  :init
   (setq org-log-done 'time
         org-time-stamp-formats '("<%Y-%m-%d %a>" . "<%Y-%m-%d %a %H:%M:%S>")
-        org-fontify-done-headline t)
+        org-fontify-done-headline t
+        org-clock-persistance 'history)
+  :config
+  (setq org-agenda-files (list "~/.emacs.d/org-files/work.org"
+                                 "~/.emacs.d/org-files/home.org"
+                                 "~/.emacs.d/emacs.org")
+        org-capture-templates '(("h" "Home" entry (file+headline "~/.emacs.d/org-files/home.org" "Home")
+                                 "* TODO %?\n %i\n %a")
+                                ("i" "INNKU" entry (file+headline "~/.emacs.d/org-files/work.org" "INNKU")
+                                 "* TODO %? %^g\n %i")
+                                ("e" "Emacs" entry (file "~/.emacs.d/emacs.org")
+                                 "* %?\n %i\n %a")))
   (custom-set-faces
    '(org-done
      ((t (:strike-through t))))
    '(org-headline-done
-     ((t (:strike-through t))))))
+     ((t (:strike-through t)))))
+  (setq org-ellipsis "⤵")
 
-(define-key global-map (kbd "C-c o a") 'org-agenda)
-(define-key global-map (kbd "C-c o c") 'org-capture)
-(define-key global-map (kbd "C-c o l") 'org-store-link)
+  :bind (("C-c o a" . org-agenda)
+         ("C-c o c" . org-capture)
+         ("C-c o l" . org-store-link)))
 
+(use-package multiple-cursors
+  :bind (("M-n" . mc/rae-hydra/body))
+  :config
+  (with-eval-after-load 'hydra
+    (defhydra mc/rae-hydra (:columns 1)
+      ("n" mc/mark-next-like-this "next")
+      ("p" mc/mark-previous-like-this "previous")
+      ("a" mc/mark-all-like-this "all")
+      ("q" nil "Quit"))))
 
+(use-package hydra)
 ;; Hydras
-;; Origami hydra
-(global-set-key (kbd "C-c f")
-                (defhydra hydra-origami (:columns 2
-                                         :pre (origami-mode 1)
-                                         :post (origami-mode -1))
-                  "Origami mode"
-                  ("a" origami-toggle-all-nodes "All")
-                  ("c" origami-close-node "Close")
-                  ("n" origami-next-fold "Next")
-                  ("o" origami-open-node "Open")
-                  ("p" origami-previous-fold "Prevouis")
-                  ("t" origami-show-only-node "This")))
-
-
-;; Taken from aboabo
+;; Taken from abo-abo
 (global-set-key (kbd "M-m")
                 (defhydra hydra-move
                   (:body-pre (next-line)
@@ -196,8 +223,9 @@
                   ("v" scroll-up-command "Scroll up")
                   ("q" nil "Quit")))
 
-;;; Personal config
-; Disable startup message
+;;;Personal config
+
+;; Disable startup message
 (setq inhibit-startup-message t)
 
 ;; Quit tool-bar

@@ -8,3 +8,4 @@ org-files
 projectile*
 recentf
 smex*
+emacs-customizations.el
