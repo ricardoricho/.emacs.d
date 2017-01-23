@@ -8,4 +8,6 @@ org-files
 projectile*
 recentf
 smex*
+bookmarks
 emacs-customizations.el
+git
