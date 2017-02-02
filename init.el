@@ -7,7 +7,8 @@
 ;; just comment it out by adding a semicolon to the start of the line.
 ;; You may delete these explanatory comments.
 (require 'package)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(add-to-list 'package-archives
+             '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
 
 (unless (package-installed-p 'use-package)
@@ -109,7 +110,17 @@
   :config
   (projectile-rails-global-mode))
 
-;; ;; Web-mode
+;; Smartparens
+(use-package smartparens
+  :init
+  (setq sp-highlight-pair-overlay nil
+        sp-highlight-wrap-overlay nil
+        sp-highlight-wrap-tag-overlay nil)
+  :config
+  (require 'smartparens-config)
+  (smartparens-global-strict-mode))
+
+;; Web-mode
 (use-package web-mode
   :mode "\\.ejs\\'"
   :init
@@ -117,7 +128,6 @@
         web-mode-css-indent-offset 2
         web-mode-code-indent-offset 2
         webm-mode-indent-style 2))
-
 
 ;; Coffee-mode
 (use-package coffee-mode
@@ -144,28 +154,27 @@
       ad-do-it))
   (ad-activate 'rspec-compile))
 
-;; ;; Ruby Bundler
+;; Ruby Bundler
 ;; (el-get-bundle! bundler)
 
 ;; ;; Undo tree
 ;; (el-get-bundle! undo-tree
 ;;   (global-undo-tree-mode))
 
-;; ;; Packages without config
-;; (el-get 'sync '(ag haml-mode yaml-mode sass-mode git-timemachine))
 (use-package ag)
+(use-package sass-mode)
 (use-package yaml-mode)
 (use-package indent-tools
   :bind (("C-c >" . indent-tools-hydra/body)))
 
-(use-package sass-mode)
 
 ;; Electric pair mode
 (electric-pair-mode 1)
 
-;; ;; Checkout
-;; ;; mrkkrp/typit
-;; ;; yuya373/emacs-slack
+;; Checkout
+;; mrkkrp/typit
+;; yuya373/emacs-slack
+;; buffer-move https://www.emacswiki.org/emacs/buffer-move.el
 
 ;; ;; Org-mode
 (use-package org
@@ -178,9 +187,13 @@
   (setq org-agenda-files (list "~/.emacs.d/org-files/work.org"
                                  "~/.emacs.d/org-files/home.org"
                                  "~/.emacs.d/emacs.org")
-        org-capture-templates '(("h" "Home" entry (file+headline "~/.emacs.d/org-files/home.org" "Home")
+        org-capture-templates '(("h" "Home" entry
+                                 (file+headline "~/.emacs.d/org-files/home.org"
+                                                "Home")
                                  "* TODO %?\n %i\n %a")
-                                ("i" "INNKU" entry (file+headline "~/.emacs.d/org-files/work.org" "INNKU")
+                                ("i" "INNKU" entry
+                                 (file+headline "~/.emacs.d/org-files/work.org"
+                                                "INNKU")
                                  "* TODO %? %^g\n %i")
                                 ("e" "Emacs" entry (file "~/.emacs.d/emacs.org")
                                  "* %?\n %i\n %a")))
@@ -227,8 +240,7 @@
                   ("v" scroll-up-command "Scroll up")
                   ("q" nil "Quit")))
 
-;;;Personal config
-
+;; Personal config
 ;; Disable startup message
 (setq inhibit-startup-message t)
 
@@ -270,7 +282,7 @@
 (global-set-key (kbd "C-j") 'join-line)
 
 ;; Delete whitespaces
-(global-set-key (kbd "M-D") 'delete-horizontal-space)
+(global-set-key (kbd "M-_") 'delete-horizontal-space)
 
 ;; Previous window
 (defun rae-previous-window ()
@@ -288,8 +300,7 @@
 ;; Automatic resize
 (advice-add 'other-window :after (lambda (foo) (rae-resize-window)))
 
-
-;;; Toggle comment lines
+;; Toggle comment lines
 (defun my-toggle-comment-on-line ()
   "Comment and uncomment lines."
   (interactive)
@@ -327,7 +338,7 @@ might be bad."
 (global-unset-key (kbd "M-R"))
 (global-set-key (kbd "M-R") 'my-reload-file)
 
-;;; Keyboard and locale
+;; Keyboard and locale
 ;; Locales
 (setq locale-coding-system 'utf-8)
 (set-terminal-coding-system 'utf-8)
@@ -345,8 +356,8 @@ might be bad."
 ;; Font size
 (set-frame-font "Hack-14" nil t)
 
-;; Theme
+;;p Theme
 (load-theme 'tango-dark t)
 
 (provide 'init)
-;;; init.el ends here
+;; init.el ends here
