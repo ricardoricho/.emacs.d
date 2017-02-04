@@ -23,6 +23,8 @@
 (setq custom-file (expand-file-name "emacs-customizations.el"
                                     user-emacs-directory))
 
+(load "~/.emacs.d/secrets.el")
+
 ;; Packages config using el-get-bundle macro
 ;; Avy jump
 (use-package avy
@@ -109,6 +111,9 @@
 (use-package projectile-rails
   :config
   (projectile-rails-global-mode))
+
+;; Pivotal
+(use-package pivotal-tracker)
 
 ;; Smartparens
 (use-package smartparens
