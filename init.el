@@ -52,7 +52,7 @@
          ("M-Y" . counsel-yank-pop))
   :config
   (ivy-mode t)
-  (diminish ivy-mode))
+  (diminish ivy-mode ""))
 
 ;; Smex (using abo-abo github repo)
 (use-package smex
@@ -159,13 +159,6 @@
       ad-do-it))
   (ad-activate 'rspec-compile))
 
-;; Ruby Bundler
-;; (el-get-bundle! bundler)
-
-;; ;; Undo tree
-;; (el-get-bundle! undo-tree
-;;   (global-undo-tree-mode))
-
 (use-package ag)
 (use-package sass-mode)
 (use-package yaml-mode)
@@ -173,15 +166,14 @@
   :bind (("C-c >" . indent-tools-hydra/body)))
 
 
-;; Electric pair mode
-(electric-pair-mode 1)
-
 ;; Checkout
+;; bundler
+;; undo-tree
 ;; mrkkrp/typit
 ;; yuya373/emacs-slack
 ;; buffer-move https://www.emacswiki.org/emacs/buffer-move.el
 
-;; ;; Org-mode
+;; Org-mode
 (use-package org
   :init
   (setq org-log-done 'time
@@ -190,8 +182,8 @@
         org-clock-persistance 'history)
   :config
   (setq org-agenda-files (list "~/.emacs.d/org-files/work.org"
-                                 "~/.emacs.d/org-files/home.org"
-                                 "~/.emacs.d/emacs.org")
+                               "~/.emacs.d/org-files/home.org"
+                               "~/.emacs.d/emacs.org")
         org-capture-templates '(("h" "Home" entry
                                  (file+headline "~/.emacs.d/org-files/home.org"
                                                 "Home")
@@ -229,7 +221,7 @@
 (global-set-key (kbd "M-m")
                 (defhydra hydra-move
                   (:body-pre (next-line)
-                   :columns 4)
+                             :columns 4)
                   "move"
                   ;; Converting M-v to V here by analogy.
                   ("V" scroll-down-command "Scroll down")
@@ -361,8 +353,102 @@ might be bad."
 ;; Font size
 (set-frame-font "Hack-14" nil t)
 
-;;p Theme
+;;Theme
 (load-theme 'tango-dark t)
+
+;; Mode line
+;; Mode line setup
+;; Based on: http://amitp.blogspot.com/2011/08/emacs-custom-mode-line.html
+(setq-default
+ mode-line-format
+ '(" %n "
+   mode-line-client
+   ;; directory and buffer/file name
+   (:propertize (:eval (shorten-directory default-directory 20))
+                face mode-line-folder-face)
+   (:propertize "%b"
+                face mode-line-filename-face)
+   ;; Position, including warning for 80 columns
+   (:propertize "%3l:" face mode-line-position-face)
+   (:propertize "%2c" face mode-line-position-face)
+   " "
+   ;; read-only or modified status
+   (:eval
+    (cond (buffer-read-only
+           (propertize "ro" 'face 'mode-line-read-only-face))
+          ((buffer-modified-p)
+           (propertize "**" 'face 'mode-line-modified-face))
+          (t "  ")))
+   (:propertize mode-name
+                face mode-line-mode-face)
+   (:eval (propertize (format-mode-line minor-mode-alist)
+                      'face 'mode-line-minor-mode-face))
+   (:propertize mode-line-process
+                face mode-line-process-face)
+   (global-mode-string global-mode-string)
+   ))
+
+;; Helper function
+(defun shorten-directory (dir max-length)
+  "Show up to `max-length' characters of a directory name `dir'."
+  (let ((path (reverse (split-string (abbreviate-file-name dir) "/")))
+        (output ""))
+    (when (and path (equal "" (car path)))
+      (setq path (cdr path)))
+    (while (and path (< (length output) (- max-length 4)))
+      (setq output (concat (car path) "/" output))
+      (setq path (cdr path)))
+    (when path
+      (setq output (concat ".../" output)))
+    output))
+
+;; Extra mode line faces
+(make-face 'mode-line-read-only-face)
+(make-face 'mode-line-modified-face)
+(make-face 'mode-line-folder-face)
+(make-face 'mode-line-filename-face)
+(make-face 'mode-line-position-face)
+(make-face 'mode-line-mode-face)
+(make-face 'mode-line-minor-mode-face)
+(make-face 'mode-line-process-face)
+(make-face 'mode-line-80col-face)
+
+(set-face-background 'fringe "gray20")
+(set-face-attribute 'mode-line nil
+                    :foreground "gray60" :background "gray20"
+                    :inverse-video nil
+                    :box '(:line-width 1 :color "gray20" :style nil))
+(set-face-attribute 'mode-line-inactive nil
+                    :foreground "gray80" :background "gray40"
+                    :inverse-video nil
+                    :box '(:line-width 1 :color "gray40" :style nil))
+
+(set-face-attribute 'mode-line-read-only-face nil
+                    :inherit 'mode-line-face
+                    :foreground "#4271ae"
+                    :box '(:line-width 2 :color "#4271ae"))
+(set-face-attribute 'mode-line-modified-face nil
+                    :inherit 'mode-line-face
+                    :foreground "#c82829"
+                    :background "gray20"
+                    :box '(:line-width 1 :color "gray20"))
+(set-face-attribute 'mode-line-folder-face nil
+                    :inherit 'mode-line-face
+                    :foreground "gray50")
+(set-face-attribute 'mode-line-filename-face nil
+                    :inherit 'mode-line-face
+                    :foreground "#b8c12b"
+                    :weight 'bold)
+(set-face-attribute 'mode-line-mode-face nil
+                    :inherit 'mode-line-face
+                    :foreground "gray80")
+(set-face-attribute 'mode-line-minor-mode-face nil
+                    :inherit 'mode-line-mode-face
+                    :foreground "gray70"
+                    :height 80)
+(set-face-attribute 'mode-line-process-face nil
+                    :inherit 'mode-line-face
+                    :foreground "#718c00")
 
 (provide 'init)
 ;; init.el ends here
