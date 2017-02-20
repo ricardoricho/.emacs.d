@@ -356,6 +356,28 @@ might be bad."
 ;;Theme
 (load-theme 'tango-dark t)
 
+;; Transparency
+;; Taken from:
+;; https://www.reddit.com/r/emacs/comments/5rnpsm/
+;; nice_hydra_to_set_frame_transparency/
+;; With little modifications...
+(defun rae/set-transparency (inc)
+  "Increase or decrease the selected frame transparency"
+  (let ((current-alpha
+         (frame-parameter (selected-frame) 'alpha)))
+    (set-frame-parameter (selected-frame) 'alpha (+ current-alpha inc))))
+
+(defhydra hydra-transparency (:columns 2)
+  "
+ Alpha : [ %(frame-parameter (selected-frame) 'alpha) ] "
+  ("j" (rae/set-transparency +1) "+ more")
+  ("k" (rae/set-transparency -1) "- less")
+  ("J" (rae/set-transparency +10) "++ more")
+  ("K" (rae/set-transparency -10) "-- less")
+  ("=" (lambda (value) (interactive "nTransparency Value 0 - 100 opaque:")
+         (set-frame-parameter (selected-frame) 'alpha value)) "Set to ?" :color blue))
+(global-set-key (kbd "M-1") 'hydra-transparency/body)
+
 ;; Mode line
 ;; Mode line setup
 ;; Based on: http://amitp.blogspot.com/2011/08/emacs-custom-mode-line.html
