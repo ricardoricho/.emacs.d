@@ -401,14 +401,14 @@ might be bad."
           ((buffer-modified-p)
            (propertize "**" 'face 'mode-line-modified-face))
           (t "  ")))
+   " "
    (:propertize mode-name
                 face mode-line-mode-face)
    (:eval (propertize (format-mode-line minor-mode-alist)
                       'face 'mode-line-minor-mode-face))
    (:propertize mode-line-process
                 face mode-line-process-face)
-   (global-mode-string global-mode-string)
-   ))
+   (global-mode-string global-mode-string)))
 
 ;; Helper function
 (defun shorten-directory (dir max-length)
@@ -433,7 +433,6 @@ might be bad."
 (make-face 'mode-line-mode-face)
 (make-face 'mode-line-minor-mode-face)
 (make-face 'mode-line-process-face)
-(make-face 'mode-line-80col-face)
 
 (set-face-background 'fringe "gray20")
 (set-face-attribute 'mode-line nil
