@@ -160,6 +160,7 @@
   (ad-activate 'rspec-compile))
 
 (use-package ag)
+(use-package minitest)
 (use-package sass-mode)
 (use-package yaml-mode)
 (use-package indent-tools
