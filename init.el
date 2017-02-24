@@ -159,6 +159,10 @@
       ad-do-it))
   (ad-activate 'rspec-compile))
 
+(use-package rubocop
+  :init
+  (add-hook 'ruby-mode-hook #'rubocop-mode))
+
 (use-package ag)
 (use-package minitest)
 (use-package sass-mode)
