@@ -170,6 +170,8 @@
 (use-package indent-tools
   :bind (("C-c >" . indent-tools-hydra/body)))
 
+;; Restclient
+(use-package restclient)
 
 ;; Checkout
 ;; bundler
