@@ -295,14 +295,11 @@
   (other-window -1))
 (global-set-key (kbd "C-x p") 'rae-previous-window)
 
-;; Resize window
-(defun rae-resize-window ()
-  "Make window to a certain size"
-  (interactive)
-  (let ((rae-resize (- 80 (window-width))))
-    (enlarge-window rae-resize t)))
-;; Automatic resize
-(advice-add 'other-window :after (lambda (foo) (rae-resize-window)))
+;; Auto-resize window
+(defadvice other-window (after rae-resize-window activate)
+  "Enlarge window to 80 columns."
+  (let ((delta (- 80 (window-width))))
+      (enlarge-window delta t)))
 
 ;; Toggle comment lines
 (defun my-toggle-comment-on-line ()
