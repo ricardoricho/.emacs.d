@@ -17,7 +17,7 @@
 (require 'use-package)
 (require 'diminish)                ;; if you use :diminish
 (require 'bind-key)                ;; if you use any :bind variant
-
+(use-package dash)
 
 ;; Custom Customizations
 (setq custom-file (expand-file-name "emacs-customizations.el"
@@ -34,11 +34,22 @@
 
 ;; Company
 (use-package company
-  :diminish company-mode
-  :config
-  (global-company-mode))
+  :init
+  (add-hook 'after-init-hook 'global-company-mode)
+  (setq company-dabbrev-downcase nil
+        company-dabbrev-ignore-case t
+        company-minimum-prefix-length 2)
+  ;; company with yasnippets
+  (defvar company-mode/enable-yas t
+    "enable yasnippet for all backends.")
 
-(use-package dash)
+  (defun company-mode/backend-with-yas (backend)
+    (if (or (not company-mode/enable-yas)
+            (and (listp backend) (member 'company-yasnippet backend)))
+        backend
+      (append (if (consp backend) backend (list backend))
+              '(:with company-yasnippet))))
+  :diminish company-mode)
 
 ;; Swiper ivy-mode
 (use-package swiper
@@ -85,10 +96,10 @@
   :bind (("C-m" . newline-and-indent)))
 
 (use-package yasnippet
-  :init
-  (setq yas-snippet-dirs '("~/.emacs.d/snippets"))
   :config
   (require 'yasnippet)
+  (define-key yas-minor-mode-map (kbd "<tab>") nil)
+  (define-key yas-minor-mode-map (kbd "TAB") nil)
   (yas-global-mode 1))
 
 ;; Move text
@@ -121,9 +132,9 @@
   (setq sp-highlight-pair-overlay nil
         sp-highlight-wrap-overlay nil
         sp-highlight-wrap-tag-overlay nil)
+  (smartparens-global-mode t)
   :config
-  (require 'smartparens-config)
-  (smartparens-global-strict-mode))
+  (define-key smartparens-mode-map (kbd "<M-S-backspace>") 'sp-unwrap-sexp))
 
 ;; Web-mode
 (use-package web-mode
@@ -158,24 +169,32 @@
     (let ((shell-file-name "/bin/bash"))
       ad-do-it))
   (ad-activate 'rspec-compile))
-
-(use-package rubocop
+(use-package rubocop)
+(use-package flycheck
   :init
-  (add-hook 'ruby-mode-hook #'rubocop-mode))
+  (global-flycheck-mode))
 
 (use-package ag)
+(use-package markdown-mode)
 (use-package minitest)
 (use-package sass-mode)
 (use-package yaml-mode)
 (use-package indent-tools
   :bind (("C-c >" . indent-tools-hydra/body)))
 
+;; Bundler
+(use-package bundler)
+
 ;; Restclient
-(use-package restclient)
+(use-package restclient
+  :mode (("\\.rest\\'" . restclient-mode)
+         ("\\.restclient\\'" . restclient-mode)))
+
+(use-package undo-tree
+  :config
+  (global-undo-tree-mode))
 
 ;; Checkout
-;; bundler
-;; undo-tree
 ;; mrkkrp/typit
 ;; yuya373/emacs-slack
 ;; buffer-move https://www.emacswiki.org/emacs/buffer-move.el
@@ -188,19 +207,15 @@
         org-fontify-done-headline t
         org-clock-persistance 'history)
   :config
-  (setq org-agenda-files (list "~/.emacs.d/org-files/work.org"
-                               "~/.emacs.d/org-files/home.org"
-                               "~/.emacs.d/emacs.org")
+  (setq org-agenda-files (list "~/.emacs.d/org-files/origin.org")
         org-capture-templates '(("h" "Home" entry
-                                 (file+headline "~/.emacs.d/org-files/home.org"
+                                 (file+headline "~/.emacs.d/org-files/origin.org"
                                                 "Home")
                                  "* TODO %?\n %i\n %a")
                                 ("i" "INNKU" entry
-                                 (file+headline "~/.emacs.d/org-files/work.org"
+                                 (file+headline "~/.emacs.d/org-files/origin.org"
                                                 "INNKU")
-                                 "* TODO %? %^g\n %i")
-                                ("e" "Emacs" entry (file "~/.emacs.d/emacs.org")
-                                 "* %?\n %i\n %a")))
+                                 "* TODO %? %^g\n %i")))
   (custom-set-faces
    '(org-done
      ((t (:strike-through t))))
@@ -212,13 +227,23 @@
          ("C-c o c" . org-capture)
          ("C-c o l" . org-store-link)))
 
+;; Ivy todo
+(use-package ivy-todo
+  :load-path "~/.emacs.d/git/ivy-todo"
+  :init
+  (setq ivy-todo-file "~/.emacs.d/org-files/origin.org"
+        ivy-todo-guess-list nil)
+  :bind ("C-c t" . ivy-todo)
+  :commands ivy-todo)
+
 (use-package multiple-cursors
-  :bind (("M-n" . mc/rae-hydra/body))
+  :bind (("M-0" . mc/rae-hydra/body))
   :config
   (with-eval-after-load 'hydra
-    (defhydra mc/rae-hydra (:columns 1)
+    (defhydra mc/rae-hydra (:columns 2)
       ("n" mc/mark-next-like-this "next")
       ("p" mc/mark-previous-like-this "previous")
+      ("s" mc/skip-to-next-like-this "skip")
       ("a" mc/mark-all-like-this "all")
       ("q" nil "Quit"))))
 
@@ -366,9 +391,9 @@ might be bad."
 ;; nice_hydra_to_set_frame_transparency/
 ;; With little modifications...
 (defun rae/set-transparency (inc)
-  "Increase or decrease the selected frame transparency"
+  "Change transparency in `INC' the selected frame transparency."
   (let ((current-alpha
-         (frame-parameter (selected-frame) 'alpha)))
+         (or (frame-parameter (selected-frame) 'alpha) 80)))
     (set-frame-parameter (selected-frame) 'alpha (+ current-alpha inc))))
 
 (defhydra hydra-transparency (:columns 2)
@@ -378,7 +403,7 @@ might be bad."
   ("k" (rae/set-transparency -1) "- less")
   ("J" (rae/set-transparency +10) "++ more")
   ("K" (rae/set-transparency -10) "-- less")
-  ("=" (lambda (value) (interactive "nTransparency Value 0 - 100 opaque:")
+  ("=" (lambda (value) (interactive "nTransparency Value 0 - 100 :")
          (set-frame-parameter (selected-frame) 'alpha value)) "Set to ?" :color blue))
 (global-set-key (kbd "M-1") 'hydra-transparency/body)
 
@@ -395,6 +420,7 @@ might be bad."
    (:propertize "%b"
                 face mode-line-filename-face)
    ;; Position, including warning for 80 columns
+   " "
    (:propertize "%3l:" face mode-line-position-face)
    (:propertize "%2c" face mode-line-position-face)
    " "
