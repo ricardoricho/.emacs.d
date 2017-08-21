@@ -57,10 +57,7 @@
   :init
   (setq ivy-display-style 'fancy)
   (setq ivy-use-virtual-buffers t)
-  :bind (("C-x b" . ivy-switch-buffer)
-         ("C-x C-f" . counsel-find-file)
-         ("C-s" . swiper)
-         ("M-Y" . counsel-yank-pop))
+  :bind (("C-s" . swiper))
   :config
   (ivy-mode t)
   (diminish ivy-mode ""))
