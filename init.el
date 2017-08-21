@@ -153,19 +153,13 @@
   :init
   (setq ruby-insert-encoding-magic-comment nil))
 
-(use-package rvm
+(use-package rbenv
   :config
-  (rvm-use-default)
+  (rbenv-use-global)
   (add-hook 'ruby-mode-hook
-            (lambda () (rvm-activate-corresponding-ruby))))
+            (lambda  () (rbenv-use-corresponding))))
 
-(use-package rspec-mode
-  :config
-  (defadvice rspec-compile (around rspec-compile-around)
-    "Use BASH shell for running the specs fo ZSH issues."
-    (let ((shell-file-name "/bin/bash"))
-      ad-do-it))
-  (ad-activate 'rspec-compile))
+(use-package rspec-mode)
 (use-package rubocop)
 (use-package flycheck
   :init
@@ -226,12 +220,12 @@
 
 ;; Ivy todo
 (use-package ivy-todo
-  :load-path "~/.emacs.d/git/ivy-todo"
-  :init
-  (setq ivy-todo-file "~/.emacs.d/org-files/origin.org"
-        ivy-todo-guess-list nil)
-  :bind ("C-c t" . ivy-todo)
-  :commands ivy-todo)
+ :load-path "~/.emacs.d/git/ivy-todo"
+ :init
+ (setq ivy-todo-file "~/.emacs.d/org-files/origin.org"
+       ivy-todo-guess-list nil)
+ :bind ("C-c t" . ivy-todo)
+ :commands ivy-todo)
 
 (use-package multiple-cursors
   :bind (("M-0" . mc/rae-hydra/body))
