@@ -87,10 +87,10 @@
     (jump-to-register :magit-fullscreen)))
 
 (use-package git-timemachine)
-(use-package haml-mode
-  :init
-  (setq indet-tabs-mode nil)
-  :bind (("C-m" . newline-and-indent)))
+
+(use-package haml-mode)
+
+(use-package yasnippet-snippets)
 
 (use-package yasnippet
   :config
@@ -119,6 +119,10 @@
 (use-package projectile-rails
   :config
   (projectile-rails-global-mode))
+
+(use-package counsel-projectile
+  :config
+  (counsel-projectile-on))
 
 ;; Pivotal
 (use-package pivotal-tracker)
