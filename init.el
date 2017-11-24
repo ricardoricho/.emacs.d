@@ -57,7 +57,10 @@
   :init
   (setq ivy-display-style 'fancy)
   (setq ivy-use-virtual-buffers t)
-  :bind (("C-s" . swiper))
+  :bind (("C-s" . swiper)
+         ("M-y" . counsel-yank-pop)
+         :map ivy-minibuffer-map
+         ("M-y" . ivy-next-line))
   :config
   (ivy-mode t)
   (diminish ivy-mode ""))
