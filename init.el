@@ -158,6 +158,9 @@
   :init
   (setq coffee-tab-width 2))
 
+;; Elixir
+(use-package elixir-mode)
+
 ;; Ruby
 (use-package ruby-mode
   :init
