@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: text_field
-# key: f.input
-# --
-= f.label ${2:field_name}
-= f.${1:text_field} :${2:field_name}, class: { "form-control" }
-$0

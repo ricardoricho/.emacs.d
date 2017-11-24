@@ -25,6 +25,8 @@
 
 (load "~/.emacs.d/secrets.el")
 
+(use-package eshell)
+
 ;; Packages config using el-get-bundle macro
 ;; Avy jump
 (use-package avy
@@ -120,6 +122,7 @@
   (projectile-mode))
 
 (use-package projectile-rails
+  :load-path "~/.emacs.d/git/projectile-rails/"
   :config
   (projectile-rails-global-mode))
 
@@ -136,8 +139,9 @@
   (setq sp-highlight-pair-overlay nil
         sp-highlight-wrap-overlay nil
         sp-highlight-wrap-tag-overlay nil)
-  (smartparens-global-mode t)
   :config
+  (require 'smartparens-config)
+  (smartparens-global-mode t)
   (define-key smartparens-mode-map (kbd "<M-S-backspace>") 'sp-unwrap-sexp))
 
 ;; Web-mode
@@ -156,7 +160,6 @@
 
 ;; Ruby
 (use-package ruby-mode
-  :mode "\\.rb\\'"
   :init
   (setq ruby-insert-encoding-magic-comment nil))
 
@@ -166,7 +169,11 @@
   (add-hook 'ruby-mode-hook
             (lambda  () (rbenv-use-corresponding))))
 
-(use-package rspec-mode)
+(use-package rspec-mode
+  :init
+  (eval-after-load 'rspec-mode
+    '(rspec-install-snippets)))
+
 (use-package rubocop)
 (use-package flycheck
   :init
@@ -500,4 +507,4 @@ might be bad."
                     :foreground "#718c00")
 
 (provide 'init)
-;; init.el ends here
+;;; init.el ends here
