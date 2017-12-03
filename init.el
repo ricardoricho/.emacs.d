@@ -264,21 +264,25 @@
 ;; Taken from abo-abo
 (global-set-key (kbd "M-m")
                 (defhydra hydra-move
-                  (:body-pre (next-line)
+                  (:body-pre (forward-line)
                              :columns 4)
-                  "move"
-                  ;; Converting M-v to V here by analogy.
-                  ("V" scroll-down-command "Scroll down")
+                  "Move vim comands"
                   ("a" beginning-of-line "Beginning")
-                  ("b" backward-char "Backward")
                   ("e" move-end-of-line "End")
-                  ("f" forward-char "Forward")
+                  ("w" forward-word "Forward word")
+                  ("W" forward-sexp "Forward sexp")
+                  ("b" backward-word "Backward word")
+                  ("B" backward-sexp "Backward sexp")
+                  ("dd" kill-whole-line "Kill whole line")
+                  ("h" backward-char "Backward")
+                  ("l" forward-char "Forward char")
+                  ("j" forward-line "Forward line")
+                  ("k" backward-line "Backward line")
+                  ("{" backward-paragraph "Backward paragraph")
+                  ("}" forward-paragraph "Forward paragraph")
                   ("g" avy-goto-char "Go to char" :bind nil)
-                  ("l" recenter-top-bottom "Center")
+                  ("c" recenter-top-bottom "Center")
                   ("m" set-mark-command "mark" :bind nil)
-                  ("n" next-line "Next")
-                  ("p" previous-line "Previous")
-                  ("v" scroll-up-command "Scroll up")
                   ("q" nil "Quit")))
 
 ;; Personal config
