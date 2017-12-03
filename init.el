@@ -144,6 +144,10 @@
   (smartparens-global-mode t)
   (define-key smartparens-mode-map (kbd "<M-S-backspace>") 'sp-unwrap-sexp))
 
+;; Latex
+(use-package tex
+  :ensure auctex)
+
 ;; Web-mode
 (use-package web-mode
   :mode "\\.ejs\\'"
