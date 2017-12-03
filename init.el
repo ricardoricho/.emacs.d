@@ -155,7 +155,7 @@
   (setq web-mode-markup-indent-offset 2
         web-mode-css-indent-offset 2
         web-mode-code-indent-offset 2
-        webm-mode-indent-style 2))
+        web-mode-indent-style 2))
 
 ;; Coffee-mode
 (use-package coffee-mode
@@ -173,8 +173,8 @@
 (use-package rbenv
   :config
   (rbenv-use-global)
-  (add-hook 'ruby-mode-hook
-            (lambda  () (rbenv-use-corresponding))))
+  :hook
+  (ruby-mode . rbenv-use-correspondig))
 
 (use-package rspec-mode
   :init
