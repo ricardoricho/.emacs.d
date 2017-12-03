@@ -173,8 +173,8 @@
 (use-package rbenv
   :config
   (rbenv-use-global)
-  :hook
-  (ruby-mode . rbenv-use-correspondig))
+  (add-hook 'ruby-mode-hook
+            (lambda  () (rbenv-use-corresponding))))
 
 (use-package rspec-mode
   :init
@@ -182,6 +182,11 @@
     '(rspec-install-snippets)))
 
 (use-package rubocop)
+(use-package robe
+  :config
+  (eval-after-load 'company
+    '(push 'company-robe company-backends)))
+
 (use-package flycheck
   :init
   (global-flycheck-mode))
