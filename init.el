@@ -106,8 +106,8 @@
 
 ;; Move text
 (use-package move-text
-  :config
-  (move-text-default-bindings))
+  :bind (("M-P" . move-text-up)
+         ("M-N" . move-text-down)))
 
 (use-package expand-region
   :bind (("C-=" . er/expand-region)))
