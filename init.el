@@ -57,8 +57,9 @@
 (use-package swiper
   :load-path "~/.emacs.d/git/swiper"
   :init
-  (setq ivy-display-style 'fancy)
-  (setq ivy-use-virtual-buffers t)
+  (setq ivy-display-style 'fancy
+        ivy-use-virtual-buffers t
+        ivy-use-selectable-prompt t)
   :bind (("C-s" . swiper)
          ("M-y" . counsel-yank-pop)
          :map ivy-minibuffer-map
