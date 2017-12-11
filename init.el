@@ -61,8 +61,7 @@
         ivy-use-virtual-buffers t
         ivy-use-selectable-prompt t)
   :bind (("C-s" . swiper)
-         ("M-y" . counsel-yank-pop)
-         :map ivy-minibuffer-map
+         ("M-y" . counsel-yank-pop) :map ivy-minibuffer-map
          ("M-y" . ivy-next-line))
   :config
   (ivy-mode t)
@@ -70,10 +69,9 @@
 
 ;; Smex (using abo-abo github repo)
 (use-package smex
-  :bind (("M-x" . smex))
   :load-path "~/.emacs.d/git/smex/"
-  :init
-  (setq smex-completion-method 'ivy))
+  :init (setq smex-completion-method 'ivy)
+  :bind (("M-x" . smex)))
 
 ;; Magit
 (use-package magit
@@ -123,6 +121,7 @@
   (projectile-mode))
 
 (use-package projectile-rails
+  :requires (inflections)
   :load-path "~/.emacs.d/git/projectile-rails/"
   :config
   (projectile-rails-global-mode))
