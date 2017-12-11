@@ -26,6 +26,7 @@
 (load "~/.emacs.d/secrets.el")
 
 (use-package eshell)
+(use-package eshell-git-prompt)
 
 ;; Packages config using el-get-bundle macro
 ;; Avy jump
@@ -547,5 +548,7 @@ Ease of use features:
                     :inherit 'mode-line-face
                     :foreground "#718c00")
 
+;; Eshell as intial buffer
+(add-hook 'emacs-startup-hook (lambda () (eshell)))
 (provide 'init)
 ;;; init.el ends here

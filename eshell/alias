@@ -1,0 +1,4 @@
+alias g git $*
+alias ll ls -l
+alias la ls -la
+alias gss git status -s
