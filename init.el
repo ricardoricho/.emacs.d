@@ -240,7 +240,17 @@
 ;; Checkout
 ;; bbastrov perspective (projects)
 ;; yuya373/emacs-slack
-;; buffer-move https://www.emacswiki.org/emacs/buffer-move.el
+
+(use-package buffer-move
+  :bind (("C-c w" . rae-buffer-move-hydra/body))
+  :config
+  (with-eval-after-load 'hydra
+    (defhydra rae-buffer-move-hydra (:columns 2)
+      ("h" buf-move-left "left")
+      ("j" buf-move-down "down")
+      ("k" buf-move-up "up")
+      ("l" buf-move-right "rigth")
+      ("q" nil "Quit"))))
 
 ;; Typing test for emacs
 (use-package typit)
