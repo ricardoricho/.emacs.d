@@ -13,8 +13,9 @@
 
 (unless (package-installed-p 'use-package)
   (package-install 'use-package))
-(setq use-package-always-ensure t)
 (require 'use-package)
+(setq use-package-always-ensure t)
+
 (require 'diminish)                ;; if you use :diminish
 (require 'bind-key)                ;; if you use any :bind variant
 (use-package dash)
@@ -25,8 +26,19 @@
 
 (load "~/.emacs.d/secrets.el")
 
-(use-package eshell)
-(use-package eshell-git-prompt)
+(use-package exec-path-from-shell
+  :if (memq window-system '(mac ns x))
+  :config (exec-path-from-shell-initialize))
+
+(use-package eshell
+  :config
+  (setq eshell-mv-interactive-query t
+        eshell-cp-interactive-query t
+        eshell-rm-interactive-query t))
+
+(use-package eshell-git-prompt
+  :config (eshell-git-prompt-use-theme 'git-radar))
+
 
 ;; Packages config using el-get-bundle macro
 ;; Avy jump
@@ -114,15 +126,11 @@
 
 ;; Projectile
 (use-package projectile
-  :init
-  (setq projectile-completion-system 'ivy
-        projectile-mode-line '(:eval
-                               (format " [%s]" (projectile-project-name))))
-  :config
-  (projectile-mode))
+  :init (setq projectile-completion-system 'ivy)
+  :delight '(:eval (format " [%s]" (projectile-project-name)))
+  :config (projectile-mode))
 
 (use-package projectile-rails
-  :requires (inflections)
   :load-path "~/.emacs.d/git/projectile-rails/"
   :config
   (projectile-rails-global-mode))
@@ -213,9 +221,12 @@
   (global-undo-tree-mode))
 
 ;; Checkout
-;; mrkkrp/typit
+;; bbastrov perspective (projects)
 ;; yuya373/emacs-slack
 ;; buffer-move https://www.emacswiki.org/emacs/buffer-move.el
+
+;; Typing test for emacs
+(use-package typit)
 
 ;; Org-mode
 (use-package org
