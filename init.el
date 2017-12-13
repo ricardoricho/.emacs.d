@@ -139,6 +139,20 @@
   :config
   (counsel-projectile-on))
 
+(use-package engine-mode
+  :config
+  (engine-mode t)
+  (engine/set-keymap-prefix (kbd "C-c s"))
+  (defengine apidock
+    "http://apidock.com/rails/search?query=%s"
+    :keybinding "a")
+  (defengine duckduckgo
+    "https://duckduckgo.com/?q=%s"
+    :keybinding "s")
+  (defengine github
+    "https://github.com/search?q=%s"
+    :keybinding "g"))
+
 ;; Pivotal
 (use-package pivotal-tracker)
 
@@ -195,6 +209,9 @@
   :config
   (eval-after-load 'company
     '(push 'company-robe company-backends)))
+
+(use-package aggressive-indent
+  :hook ((ruby-mode . aggressive-indent-mode)))
 
 (use-package flycheck
   :init
