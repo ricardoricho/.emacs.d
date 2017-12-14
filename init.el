@@ -151,7 +151,10 @@
     :keybinding "s")
   (defengine github
     "https://github.com/search?q=%s"
-    :keybinding "g"))
+    :keybinding "g")
+  (defengine mozilla
+    "https://developer.mozilla.org/en-US/search?q=%s"
+    :keybinding "m"))
 
 ;; Pivotal
 (use-package pivotal-tracker)
@@ -372,6 +375,9 @@
 
 ;; Delete whitespaces
 (global-set-key (kbd "M-_") 'delete-horizontal-space)
+
+;; Unbindings
+(global-unset-key (kbd "C-x C-b"))
 
 ;; Previous window
 (defun rae-previous-window ()
