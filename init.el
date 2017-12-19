@@ -141,6 +141,9 @@
   :config
   (counsel-projectile-on))
 
+(use-package browse-at-remote
+  :bind (("C-c g r" . browse-at-remote)))
+
 (use-package engine-mode
   :config
   (engine-mode t)
