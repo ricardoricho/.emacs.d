@@ -116,6 +116,8 @@
   (define-key yas-minor-mode-map (kbd "TAB") nil)
   (yas-global-mode 1))
 
+(use-package swift-mode)
+
 ;; Move text
 (use-package move-text
   :bind (("M-P" . move-text-up)
