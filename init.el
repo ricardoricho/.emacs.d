@@ -80,6 +80,13 @@
   (ivy-mode t)
   (diminish ivy-mode ""))
 
+(use-package helpful
+  :bind
+  (("C-h f" . #'helpful-callable)
+   ("C-h v" . #'helpful-variable)
+   ("C-h k" . #'helpful-key)
+   ("C-c C-." . #'helpful-at-point)))
+
 ;; Smex (using abo-abo github repo)
 (use-package smex
   :load-path "~/.emacs.d/git/smex/"
