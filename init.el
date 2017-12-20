@@ -157,7 +157,8 @@
       ("c" projectile-invalidate-cache "Clear Cache")
       ("X" projectile-cleanup-known-projects "Cleanup Known Projects")
       ("o" projectile-multi-occur "Multi Occur")
-      ("s" counsel-ag "Switch Project")
+      ("s" counsel-ag "Search")
+      ("p" projectile-switch-project "Switch Project")
       ("k" projectile-kill-buffers "Kill Buffers")
       ("q" nil "Cancel" :color blue))
     (setq projectile-switch-project-action
