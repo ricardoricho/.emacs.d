@@ -97,6 +97,12 @@
     ad-do-it
     (delete-other-windows))
 
+  ;; Switch projectile use magit-status-internal
+  (defadvice magit-status-internal (around magit-fullscreen activate)
+    (window-configuration-to-register :magit-fullscreen)
+    ad-do-it
+    (delete-other-windows))
+
   (defun magit-quit-session ()
     "Restores the previous window configuration and kills the magit buffer"
     (interactive)
@@ -130,16 +136,36 @@
 (use-package projectile
   :init (setq projectile-completion-system 'ivy)
   :delight '(:eval (format " [%s]" (projectile-project-name)))
-  :config (projectile-mode))
+  :bind (("C-c p h" . rae-projectile-hydra/body))
+  :config (projectile-mode)
+  (with-eval-after-load 'hydra
+    (defhydra rae-projectile-hydra (:columns 4)
+      "Projectile"
+      ("f" projectile-find-file "Find File")
+      ("r" projectile-recentf "Recent Files")
+      ("z" projectile-cache-current-file "Cache Current File")
+      ("x" projectile-remove-known-project "Remove Known Project")
+      ("d" projectile-find-dir "Find Directory")
+      ("b" projectile-switch-to-buffer "Switch to Buffer")
+      ("c" projectile-invalidate-cache "Clear Cache")
+      ("X" projectile-cleanup-known-projects "Cleanup Known Projects")
+      ("o" projectile-multi-occur "Multi Occur")
+      ("s" counsel-ag "Switch Project")
+      ("k" projectile-kill-buffers "Kill Buffers")
+      ("q" nil "Cancel" :color blue))
+    (setq projectile-switch-project-action
+          (lambda ()
+            (magit-status-internal default-directory)
+            (rae-projectile-hydra/body)))))
 
 (use-package projectile-rails
   :load-path "~/.emacs.d/git/projectile-rails/"
   :config
   (projectile-rails-global-mode))
 
-(use-package counsel-projectile
-  :config
-  (counsel-projectile-on))
+;; (use-package counsel-projectile
+;;   :config
+;;   (counsel-projectile-on))
 
 (use-package browse-at-remote
   :bind (("C-c g r" . browse-at-remote)))
