@@ -34,7 +34,11 @@
   :config
   (setq eshell-mv-interactive-query t
         eshell-cp-interactive-query t
-        eshell-rm-interactive-query t))
+        eshell-rm-interactive-query t)
+  (defadvice eshell (around eshell-fullscreen activate)
+    (window-configuration-to-register :eshell-fullscreen)
+    ad-do-it
+    (delete-other-windows)))
 
 (use-package eshell-git-prompt
   :config (eshell-git-prompt-use-theme 'git-radar))
@@ -148,19 +152,18 @@
   (with-eval-after-load 'hydra
     (defhydra rae-projectile-hydra (:columns 4)
       "Projectile"
-      ("f" projectile-find-file "Find File")
-      ("r" projectile-recentf "Recent Files")
-      ("z" projectile-cache-current-file "Cache Current File")
-      ("x" projectile-remove-known-project "Remove Known Project")
-      ("d" projectile-find-dir "Find Directory")
       ("b" projectile-switch-to-buffer "Switch to Buffer")
       ("c" projectile-invalidate-cache "Clear Cache")
-      ("X" projectile-cleanup-known-projects "Cleanup Known Projects")
-      ("o" projectile-multi-occur "Multi Occur")
-      ("s" counsel-ag "Search")
-      ("p" projectile-switch-project "Switch Project")
+      ("d" projectile-find-dir "Find Directory")
+      ("f" projectile-find-file "Find File")
       ("k" projectile-kill-buffers "Kill Buffers")
+      ("o" projectile-multi-occur "Multi Occur")
+      ("p" projectile-switch-project "Switch Project")
+      ("r" projectile-recentf "Recent Files")
+      ("s" counsel-ag "Search")
+      ("z" projectile-cache-current-file "Cache Current File")
       ("q" nil "Cancel" :color blue))
+
     (setq projectile-switch-project-action
           (lambda ()
             (magit-status-internal default-directory)
@@ -171,12 +174,7 @@
   :config
   (projectile-rails-global-mode))
 
-;; (use-package counsel-projectile
-;;   :config
-;;   (counsel-projectile-on))
-
-(use-package browse-at-remote
-  :bind (("C-c g r" . browse-at-remote)))
+(use-package browse-at-remote)
 
 (use-package engine-mode
   :config
@@ -345,31 +343,39 @@
       ("a" mc/mark-all-like-this "all")
       ("q" nil "Quit"))))
 
-(use-package hydra)
-;; Hydras
-;; Taken from abo-abo
-(global-set-key (kbd "M-m")
-                (defhydra hydra-move
-                  (:body-pre (forward-line)
-                             :columns 4)
-                  "Move vim comands"
-                  ("a" beginning-of-line "Beginning")
-                  ("e" move-end-of-line "End")
-                  ("w" forward-word "Forward word")
-                  ("W" forward-sexp "Forward sexp")
-                  ("b" backward-word "Backward word")
-                  ("B" backward-sexp "Backward sexp")
-                  ("dd" kill-whole-line "Kill whole line")
-                  ("h" backward-char "Backward")
-                  ("l" forward-char "Forward char")
-                  ("j" forward-line "Forward line")
-                  ("k" backward-line "Backward line")
-                  ("{" backward-paragraph "Backward paragraph")
-                  ("}" forward-paragraph "Forward paragraph")
-                  ("g" avy-goto-char "Go to char" :bind nil)
-                  ("c" recenter-top-bottom "Center")
-                  ("m" set-mark-command "mark" :bind nil)
-                  ("q" nil "Quit")))
+(use-package hydra
+  :config
+  ;; Hydras
+  ;; Taken from abo-abo
+  (global-set-key (kbd "M-m")
+                  (defhydra hydra-move
+                    (:body-pre (forward-line)
+                               :columns 4)
+                    "Move vim comands"
+                    ("a" beginning-of-line "Beginning")
+                    ("e" move-end-of-line "End")
+                    ("w" forward-word "Forward word")
+                    ("W" forward-sexp "Forward sexp")
+                    ("b" backward-word "Backward word")
+                    ("B" backward-sexp "Backward sexp")
+                    ("dd" kill-whole-line "Kill whole line")
+                    ("h" backward-char "Backward")
+                    ("l" forward-char "Forward char")
+                    ("j" forward-line "Forward line")
+                    ("k" previous-line "Backward line")
+                    ("{" backward-paragraph "Backward paragraph")
+                    ("}" forward-paragraph "Forward paragraph")
+                    ("g" avy-goto-char "Go to char" :bind nil)
+                    ("c" recenter-top-bottom "Center")
+                    ("m" set-mark-command "mark" :bind nil)
+                    ("q" nil "Quit")))
+  (global-set-key (kbd "C-c g")
+                  (defhydra hydra-go (:colums 2)
+                    "Go to"
+                    ("l" goto-line "Line")
+                    ("u" browse-url "Url")
+                    ("r" browse-at-remote "Remote")
+                    ("q" nil "Quit" :color blue))))
 
 ;; Personal config
 ;; Disable startup message
