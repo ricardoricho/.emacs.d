@@ -543,6 +543,10 @@ Ease of use features:
          (set-frame-parameter (selected-frame) 'alpha value)) "Set to ?" :color blue))
 (global-set-key (kbd "M-1") 'hydra-transparency/body)
 
+;; Dimmer focus current Buffer
+(use-package dimmer
+  :config (dimmer-activate))
+
 ;; Mode line
 ;; Mode line setup
 ;; Based on: http://amitp.blogspot.com/2011/08/emacs-custom-mode-line.html
