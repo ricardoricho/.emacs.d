@@ -31,6 +31,7 @@
   :config (exec-path-from-shell-initialize))
 
 (use-package eshell
+  :bind (("C-c e". eshell))
   :config
   (setq eshell-mv-interactive-query t
         eshell-cp-interactive-query t
