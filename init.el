@@ -71,19 +71,18 @@
               '(:with company-yasnippet))))
   :diminish company-mode)
 
-;; Swiper ivy-mode
-(use-package swiper
-  :load-path "~/.emacs.d/git/swiper"
+;; Swiper ivy counsel
+(use-package counsel
   :init
   (setq ivy-display-style 'fancy
         ivy-use-virtual-buffers t
         ivy-use-selectable-prompt t)
   :bind (("C-s" . swiper)
+         ("C-x C-f" . counsel-find-file)
          ("M-y" . counsel-yank-pop) :map ivy-minibuffer-map
          ("M-y" . ivy-next-line))
   :config
-  (ivy-mode t)
-  (diminish ivy-mode ""))
+  (ivy-mode t))
 
 (use-package helpful
   :bind
