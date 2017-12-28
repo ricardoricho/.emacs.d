@@ -78,6 +78,7 @@
         ivy-use-virtual-buffers t
         ivy-use-selectable-prompt t)
   :bind (("C-s" . swiper)
+         ("C-x b". ivy-switch-buffer)
          ("C-x C-f" . counsel-find-file)
          ("M-y" . counsel-yank-pop) :map ivy-minibuffer-map
          ("M-y" . ivy-next-line))
@@ -167,7 +168,8 @@
     (setq projectile-switch-project-action
           (lambda ()
             (magit-status-internal default-directory)
-            (rae-projectile-hydra/body)))))
+            (rae-projectile-hydra/body))))
+  (define-key projectile-mode-map [remap projectile-ag] 'counsel-ag))
 
 (use-package projectile-rails
   :load-path "~/.emacs.d/git/projectile-rails/"
