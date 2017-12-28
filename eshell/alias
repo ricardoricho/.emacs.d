@@ -11,6 +11,7 @@ alias la ls -la
 alias ll ls -l
 alias rdm bundle exec rake db:migrate
 alias rdms bundle exec rake db:migrate:status
+alias rdr bundle exec rake db:rollback
 alias rgm bundle exec rails g migration $*
 alias rm rm -r $*
 alias rrg bundle exec rake routes | grep $*
