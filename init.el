@@ -247,10 +247,6 @@
     '(rspec-install-snippets)))
 
 (use-package rubocop)
-(use-package robe
-  :config
-  (eval-after-load 'company
-    '(push 'company-robe company-backends)))
 
 (use-package aggressive-indent
   :hook ((ruby-mode . aggressive-indent-mode)))
