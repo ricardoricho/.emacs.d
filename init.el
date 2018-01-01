@@ -56,9 +56,10 @@
 (use-package company
   :init
   (add-hook 'after-init-hook 'global-company-mode)
-  (setq company-dabbrev-downcase nil
-        company-dabbrev-ignore-case t
+  (setq company-dabbrev-ignore-case t
         company-minimum-prefix-length 2)
+  :diminish company-mode
+  :config
   ;; company with yasnippets
   (defvar company-mode/enable-yas t
     "enable yasnippet for all backends.")
