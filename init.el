@@ -250,7 +250,7 @@
 (use-package rubocop)
 
 (use-package aggressive-indent
-  :hook ((ruby-mode . aggressive-indent-mode)))
+  :hook ((prog-mode . aggressive-indent-mode)))
 
 (use-package flycheck
   :init
