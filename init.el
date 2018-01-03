@@ -303,20 +303,17 @@
         org-clock-persistance 'history)
   :config
   (setq org-agenda-files (list "~/.emacs.d/org-files/origin.org")
-        org-capture-templates '(("h" "Home" entry
-                                 (file+headline "~/.emacs.d/org-files/origin.org"
-                                                "Home")
-                                 "* TODO %?\n %i\n %a")
-                                ("i" "INNKU" entry
-                                 (file+headline "~/.emacs.d/org-files/origin.org"
-                                                "INNKU")
-                                 "* TODO %? %^g\n %i")))
+        org-capture-templates '(("c" "Create" entry
+                                 (file "~/.emacs.d/org-files/origin.org")
+                                 "* %^{prompt} %T %^g \n %?" :kill-buffer)))
   (custom-set-faces
    '(org-done
      ((t (:strike-through t))))
    '(org-headline-done
      ((t (:strike-through t)))))
   (setq org-ellipsis "⤵")
+  (define-key org-mode-map (kbd "M-p") 'org-move-subtree-up)
+  (define-key org-mode-map (kbd "M-n") 'org-move-subtree-down)
 
   :bind (("C-c o a" . org-agenda)
          ("C-c o c" . org-capture)
