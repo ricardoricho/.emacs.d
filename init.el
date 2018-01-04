@@ -250,7 +250,7 @@
 (use-package rubocop)
 
 (use-package aggressive-indent
-  :hook ((prog-mode . aggressive-indent-mode)))
+  :hook ((ruby-mode . aggressive-indent-mode)))
 
 (use-package flycheck
   :init
@@ -306,11 +306,13 @@
         org-capture-templates '(("c" "Create" entry
                                  (file "~/.emacs.d/org-files/origin.org")
                                  "* %^{prompt} %T %^g \n %?" :kill-buffer)))
+  ;; Strike through DONE tasks
   (custom-set-faces
    '(org-done
      ((t (:strike-through t))))
    '(org-headline-done
      ((t (:strike-through t)))))
+
   (setq org-ellipsis "⤵")
   (define-key org-mode-map (kbd "M-p") 'org-move-subtree-up)
   (define-key org-mode-map (kbd "M-n") 'org-move-subtree-down)
