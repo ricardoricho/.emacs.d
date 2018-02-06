@@ -146,37 +146,22 @@
   :bind (("C-=" . er/expand-region)))
 
 ;; Projectile
-(use-package projectile
-  :init (setq projectile-completion-system 'ivy)
-  :delight '(:eval (format " [%s]" (projectile-project-name)))
-  :bind (("C-c p h" . rae-projectile-hydra/body))
-  :config (projectile-mode)
-  (with-eval-after-load 'hydra
-    (defhydra rae-projectile-hydra (:columns 4)
-      "Projectile"
-      ("b" projectile-switch-to-buffer "Switch to Buffer")
-      ("c" projectile-invalidate-cache "Clear Cache")
-      ("d" projectile-find-dir "Find Directory")
-      ("f" projectile-find-file "Find File")
-      ("k" projectile-kill-buffers "Kill Buffers")
-      ("o" projectile-multi-occur "Multi Occur")
-      ("p" projectile-switch-project "Switch Project")
-      ("r" projectile-recentf "Recent Files")
-      ("s" counsel-ag "Search")
-      ("z" projectile-cache-current-file "Cache Current File")
-      ("q" nil "Cancel" :color blue))
-
-    (setq projectile-switch-project-action
-          (lambda ()
-            (magit-status-internal default-directory)
-            (rae-projectile-hydra/body))))
-  (define-key projectile-mode-map [remap projectile-ag] 'counsel-ag))
+(use-package counsel-projectile
+  :config
+  (counsel-projectile-mode)
+  (setq projectile-switch-project-action
+        (lambda ()
+          (magit-status-internal default-directory)
+          (counsel-projectile-find-file))))
 
 (use-package projectile-rails
   :load-path "~/.emacs.d/git/projectile-rails/"
   :config
-  (projectile-rails-global-mode))
+  (projectile-rails-global-mode)
+  (with-eval-after-load 'rake
+    (setq rake-completion-system 'ivy-read)))
 
+(use-package ranger)
 (use-package browse-at-remote)
 
 (use-package engine-mode
