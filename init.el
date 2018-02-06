@@ -423,6 +423,8 @@
 (global-set-key (kbd "M-_") 'delete-horizontal-space)
 
 ;; Unbindings
+(global-unset-key (kbd "C-z"))
+(global-unset-key (kbd "M-i"))
 (global-unset-key (kbd "C-x C-b"))
 
 ;; Previous window
