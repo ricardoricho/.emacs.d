@@ -23,6 +23,12 @@
 ;; Custom Customizations
 (setq custom-file (expand-file-name "emacs-customizations.el"
                                     user-emacs-directory))
+;; Some hooks
+(add-hook 'prog-mode-hook 'subword-mode)
+(add-hook 'sql-interactive-mode-hook
+            (lambda ()
+              (setq sql-prompt-regexp "^[_[:alpha:]]*[=][#>] ")
+              (setq sql-prompt-cont-regexp "^[_[:alpha:]]*[-][#>] ")))
 
 (load "~/.emacs.d/secrets.el")
 
