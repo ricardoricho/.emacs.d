@@ -153,12 +153,16 @@
 
 ;; Projectile
 (use-package counsel-projectile
+  :delight (projectile-mode (:eval (format " [%s]" (projectile-project-name))))
   :config
   (counsel-projectile-mode)
-  (setq projectile-switch-project-action
-        (lambda ()
-          (magit-status-internal default-directory)
-          (counsel-projectile-find-file))))
+  (setq counsel-projectile-switch-project-action
+        (lambda (project)
+          (let ((projectile-switch-project-action
+                 (lambda ()
+                   (magit-status-internal default-directory)
+                   (counsel-projectile ivy-current-prefix-arg))))
+            (counsel-projectile-switch-project-by-name project)))))
 
 (use-package projectile-rails
   :load-path "~/.emacs.d/git/projectile-rails/"
