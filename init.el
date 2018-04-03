@@ -320,6 +320,28 @@
   :bind (("C-c o a" . org-agenda)
          ("C-c o c" . org-capture)
          ("C-c o l" . org-store-link)))
+;; Elfeed
+(use-package elfeed
+  :config
+  (setq-default elfeed-search-filter "+unread @2-weeks-ago")
+  (defun elfeed-start ()
+    (interactive)
+    (elfeed-db-load)
+    (elfeed)
+    (delete-other-windows)
+    (elfeed-search-update--force)))
+
+(use-package elfeed-org
+  :config
+  (elfeed-org)
+  (setq rmh-elfeed-org-files (list "~/.emacs.d/elfeed.org")))
+
+(use-package elfeed-goodies
+  :after (elfeed)
+  :config
+  (elfeed-goodies/setup)
+  (setq elfeed-goodies/entry-pane-position 'bottom
+        elfeed-goodies/entry-pane-size 0.65))
 
 ;; Ivy todo
 (use-package ivy-todo
