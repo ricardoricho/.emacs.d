@@ -13,11 +13,12 @@
 
 (unless (package-installed-p 'use-package)
   (package-install 'use-package))
-(require 'use-package)
 (setq use-package-always-ensure t)
+(eval-when-compile
+  (require 'use-package))
 
-(require 'diminish)                ;; if you use :diminish
 (require 'bind-key)                ;; if you use any :bind variant
+(use-package delight)
 (use-package dash)
 
 ;; Custom Customizations
@@ -64,7 +65,7 @@
   (add-hook 'after-init-hook 'global-company-mode)
   (setq company-dabbrev-ignore-case t
         company-minimum-prefix-length 2)
-  :diminish company-mode
+  :delight
   :config
   ;; company with yasnippets
   (defvar company-mode/enable-yas t
