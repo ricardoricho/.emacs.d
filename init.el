@@ -238,12 +238,13 @@
   (add-hook 'ruby-mode-hook
             (lambda  () (rbenv-use-corresponding))))
 
+(use-package rubocop
+  :hook ((ruby-mode . rubocop-mode)))
+
 (use-package rspec-mode
   :init
   (eval-after-load 'rspec-mode
     '(rspec-install-snippets)))
-
-(use-package rubocop)
 
 (use-package aggressive-indent
   :hook ((ruby-mode . aggressive-indent-mode)))
