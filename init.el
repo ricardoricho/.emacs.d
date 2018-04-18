@@ -663,7 +663,9 @@ Ease of use features:
                     :inherit 'mode-line-face
                     :foreground "#718c00")
 
-;; Eshell as intial buffer
-(add-hook 'emacs-startup-hook (lambda () (eshell)))
+;; Set actions for startup
+(add-hook 'emacs-startup-hook (lambda ()
+                                (toggle-frame-maximized)
+                                (elfeed-start)))
 (provide 'init)
 ;;; init.el ends here
