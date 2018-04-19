@@ -349,7 +349,7 @@
  :init
  (setq ivy-todo-file "~/.emacs.d/org-files/origin.org"
        ivy-todo-guess-list nil)
- :bind ("C-c t" . ivy-todo)
+ :bind ("C-c o t" . ivy-todo)
  :commands ivy-todo)
 
 (use-package multiple-cursors
