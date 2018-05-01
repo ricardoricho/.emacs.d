@@ -81,6 +81,7 @@
 
 ;; Swiper ivy counsel
 (use-package counsel
+  :delight ivy-mode
   :init
   (setq ivy-display-style 'fancy
         ivy-use-virtual-buffers t
@@ -153,6 +154,14 @@
   :bind (("C-=" . er/expand-region)))
 
 ;; Projectile
+(use-package projectile-rails
+  :init (setq projectile-completion-system 'ivy)
+  :load-path "~/.emacs.d/git/projectile-rails/"
+  :config
+  (projectile-rails-global-mode)
+  (with-eval-after-load 'rake
+    (setq rake-completion-system 'ivy-read)))
+
 (use-package counsel-projectile
   :delight (projectile-mode (:eval (format " [%s]" (projectile-project-name))))
   :config
@@ -165,12 +174,15 @@
                    (counsel-projectile ivy-current-prefix-arg))))
             (counsel-projectile-switch-project-by-name project)))))
 
-(use-package projectile-rails
-  :load-path "~/.emacs.d/git/projectile-rails/"
+;; Ivy todo
+(use-package ivy-todo
+ :load-path "~/.emacs.d/git/ivy-todo"
+ :init
+ (setq ivy-todo-file "~/.emacs.d/org-files/origin.org"
+       ivy-todo-guess-list nil)
+ :bind ("C-c o t" . ivy-todo)
+ :commands ivy-todo)
   :config
-  (projectile-rails-global-mode)
-  (with-eval-after-load 'rake
-    (setq rake-completion-system 'ivy-read)))
 
 (use-package ranger)
 (use-package browse-at-remote)
