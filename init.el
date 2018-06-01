@@ -33,6 +33,192 @@
 
 (load "~/.emacs.d/secrets.el")
 
+
+;; Default configs
+
+;; Personal config
+;; Disable startup message
+(setq inhibit-startup-message t)
+
+;; Quit tool-bar
+(tool-bar-mode -1)
+
+;; No scrollbar
+(scroll-bar-mode -1)
+
+;; Turn off alarms
+(setq ring-bell-function 'ignore)
+
+;; Typed text delete selection
+(pending-delete-mode 1)
+
+;; Show column
+(column-number-mode 1)
+
+;; Show parens
+(show-paren-mode 1)
+
+;; Backups
+(setq
+ backup-by-copying t
+ backup-directory-alist '(("." . "~/.emacs.d/backups"))
+ delete-old-versions t
+ kept-new-versions 2
+ kept-old-versions 1
+ version-control t)
+
+;; Change all prompts to y or n
+(fset 'yes-or-no-p 'y-or-n-p)
+
+;; Winner mode
+;; Restore window with C-c <left> (undo C-c <right>)
+(winner-mode 1)
+
+;; Join lines
+(global-set-key (kbd "C-j") 'join-line)
+
+;; Delete whitespaces
+(global-set-key (kbd "M-_") 'delete-horizontal-space)
+
+;; Unbindings
+(global-unset-key (kbd "C-z"))
+(global-unset-key (kbd "M-i"))
+(global-unset-key (kbd "C-x C-b"))
+
+;; Previous window
+(defun rae-previous-window ()
+  "Call `other-window with negative value."
+  (interactive)
+  (other-window -1))
+(global-set-key (kbd "C-x p") 'rae-previous-window)
+
+;; Auto-resize window
+(defadvice other-window (after rae-resize-window activate)
+  "Enlarge window to 80 columns, if is a `prog-mode' buffer."
+  (let ((delta (- 80 (window-width))))
+    (enlarge-window delta t)))
+
+;; Move line (region sprex??) up
+(defun my-up-to-next-line ()
+  "Move up to next line."
+  (interactive)
+  (kill-line)
+  (forward-line -1)
+  (end-of-line)
+  (yank))
+(global-set-key (kbd "C-c u") 'my-up-to-next-line)
+
+;; Toggle comment lines
+(defun my-toggle-comment-on-line ()
+  "Comment and uncomment lines."
+  (interactive)
+  (if (use-region-p)
+      (comment-or-uncomment-region (region-beginning) (region-end))
+    (comment-or-uncomment-region (line-beginning-position)
+                                 (line-end-position))))
+(global-unset-key (kbd "M-/"))
+(global-set-key (kbd "M-/") 'my-toggle-comment-on-line)
+
+;; Trailing whitespaces and save safetly taken from:
+;; http://whattheemacsd.com/buffer-defuns.el-01.html
+(defun my-cleanup-buffer-safe ()
+  "Perform a bunch of safe operations on the whitespace content of a buffer.
+Does not indent buffer, because it is used for a 'before-save-hook', and that
+might be bad."
+  (interactive)
+  (untabify (point-min) (point-max))
+  (delete-trailing-whitespace)
+  (set-buffer-file-coding-system 'utf-8))
+;; Various superfluous white-space. Just say no.
+(add-hook 'before-save-hook 'my-cleanup-buffer-safe)
+
+;; Kill whole line
+(global-unset-key (kbd "M-k"))
+(global-set-key (kbd "M-k") 'kill-whole-line)
+
+;; Copy line
+(defun copy-line (arg)
+  "Copy lines (as many as prefix ARG) in the kill ring.
+Ease of use features:
+    - Move to start of next line.
+    - Appends the copy on sequential calls.
+    - Use newline as last char even on the last line of the buffer.
+    - If region is active, copy its lines."
+  (interactive "p")
+  (let ((beg (line-beginning-position))
+        (end (line-end-position arg)))
+    (when mark-active
+      (if (> (point) (mark))
+          (setq beg (save-excursion (goto-char (mark)) (line-beginning-position)))
+        (setq end (save-excursion (goto-char (mark)) (line-end-position)))))
+    (if (eq last-command 'copy-line)
+        (kill-append (buffer-substring beg end) (< end beg))
+      (kill-ring-save beg end)))
+  (kill-append "\n" nil)
+  (beginning-of-line (or (and arg (1+ arg)) 2))
+  (if (and arg (not (= 1 arg))) (message "%d lines copied" arg)))
+
+;; optional key binding
+(global-set-key (kbd "C-c C-k") 'copy-line)
+
+;; Reload file
+(defun my-reload-file ()
+  "Reload current file by reverting current buffer."
+  (interactive)
+  (revert-buffer t t t)
+  (message "Reload %s"
+           (buffer-file-name (current-buffer))))
+(global-unset-key (kbd "M-R"))
+(global-set-key (kbd "M-R") 'my-reload-file)
+
+;; Smooth scroll
+(setq scroll-conservatively 111)
+(setq scroll-margin 4)
+
+;; Keyboard and locale
+;; Locales
+(setq locale-coding-system 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(set-selection-coding-system 'utf-8)
+(prefer-coding-system 'utf-8)
+
+;; Change Ctrl and Meta on Mac
+(setq mac-option-modifier 'super
+      mac-right-option-modifier nil
+      mac-command-modifier 'meta
+      select-enable-clipboard t)
+
+;;; Theme and fonts
+;; Font size
+(set-frame-font "Hack-14" nil t)
+
+;; Transparency
+;; Taken from:
+;; https://www.reddit.com/r/emacs/comments/5rnpsm/
+;; nice_hydra_to_set_frame_transparency/
+;; With little modifications...
+(defun rae/set-transparency (inc)
+  "Change transparency in `INC' the selected frame transparency."
+  (let ((current-alpha
+         (or (frame-parameter (selected-frame) 'alpha) 80)))
+    (set-frame-parameter (selected-frame) 'alpha (+ current-alpha inc))))
+
+(defhydra hydra-transparency (:columns 2)
+  "
+ Alpha : [ %(frame-parameter (selected-frame) 'alpha) ] "
+  ("j" (rae/set-transparency +1) "+ more")
+  ("k" (rae/set-transparency -1) "- less")
+  ("J" (rae/set-transparency +10) "++ more")
+  ("K" (rae/set-transparency -10) "-- less")
+  ("=" (lambda (value) (interactive "nTransparency Value 0 - 100 :")
+         (set-frame-parameter (selected-frame) 'alpha value)) "Set to ?" :color blue))
+(global-set-key (kbd "M-1") 'hydra-transparency/body)
+
+;; Dimmer focus current Buffer
+(use-package dimmer)
+
+;; Packages
 (use-package exec-path-from-shell
   :if (memq window-system '(mac ns x))
   :config (exec-path-from-shell-initialize))
@@ -422,179 +608,14 @@
                     ("l" goto-line "Line")
                     ("u" browse-url "Url")
                     ("r" browse-at-remote "Remote")
-                    ("q" nil "Quit" :color blue))))
-
-;; Personal config
-;; Disable startup message
-(setq inhibit-startup-message t)
-
-;; Quit tool-bar
-(tool-bar-mode -1)
-
-;; No scrollbar
-(scroll-bar-mode -1)
-
-;; Turn off alarms
-(setq ring-bell-function 'ignore)
-
-;; Typed text delete selection
-(pending-delete-mode 1)
-
-;; Show column
-(column-number-mode 1)
-
-;; Show parens
-(show-paren-mode 1)
-
-;; Backups
-(setq
- backup-by-copying t
- backup-directory-alist '(("." . "~/.emacs.d/backups"))
- delete-old-versions t
- kept-new-versions 2
- kept-old-versions 1
- version-control t)
-
-;; Change all prompts to y or n
-(fset 'yes-or-no-p 'y-or-n-p)
-
-;; Winner mode
-;; Restore window with C-c <left> (undo C-c <right>)
-(winner-mode 1)
-
-;; Join lines
-(global-set-key (kbd "C-j") 'join-line)
-
-;; Delete whitespaces
-(global-set-key (kbd "M-_") 'delete-horizontal-space)
-
-;; Unbindings
-(global-unset-key (kbd "C-z"))
-(global-unset-key (kbd "M-i"))
-(global-unset-key (kbd "C-x C-b"))
-
-;; Previous window
-(defun rae-previous-window ()
-  "Call `other-window with negative value."
-  (interactive)
-  (other-window -1))
-(global-set-key (kbd "C-x p") 'rae-previous-window)
-
-;; Auto-resize window
-(defadvice other-window (after rae-resize-window activate)
-  "Enlarge window to 80 columns."
-  (let ((delta (- 80 (window-width))))
-      (enlarge-window delta t)))
-
-;; Toggle comment lines
-(defun my-toggle-comment-on-line ()
-  "Comment and uncomment lines."
-  (interactive)
-  (if (use-region-p)
-      (comment-or-uncomment-region (region-beginning) (region-end))
-    (comment-or-uncomment-region (line-beginning-position)
-                                 (line-end-position))))
-(global-unset-key (kbd "M-/"))
-(global-set-key (kbd "M-/") 'my-toggle-comment-on-line)
-
-;; Trailing whitespaces and save safetly taken from:
-;; http://whattheemacsd.com/buffer-defuns.el-01.html
-(defun my-cleanup-buffer-safe ()
-  "Perform a bunch of safe operations on the whitespace content of a buffer.
-Does not indent buffer, because it is used for a 'before-save-hook', and that
-might be bad."
-  (interactive)
-  (untabify (point-min) (point-max))
-  (delete-trailing-whitespace)
-  (set-buffer-file-coding-system 'utf-8))
-;; Various superfluous white-space. Just say no.
-(add-hook 'before-save-hook 'my-cleanup-buffer-safe)
-
-;; Kill whole line
-(global-unset-key (kbd "M-k"))
-(global-set-key (kbd "M-k") 'kill-whole-line)
-
-;; Copy line
-(defun copy-line (arg)
-  "Copy lines (as many as prefix ARG) in the kill ring.
-Ease of use features:
-    - Move to start of next line.
-    - Appends the copy on sequential calls.
-    - Use newline as last char even on the last line of the buffer.
-    - If region is active, copy its lines."
-  (interactive "p")
-  (let ((beg (line-beginning-position))
-        (end (line-end-position arg)))
-    (when mark-active
-      (if (> (point) (mark))
-          (setq beg (save-excursion (goto-char (mark)) (line-beginning-position)))
-        (setq end (save-excursion (goto-char (mark)) (line-end-position)))))
-    (if (eq last-command 'copy-line)
-        (kill-append (buffer-substring beg end) (< end beg))
-      (kill-ring-save beg end)))
-  (kill-append "\n" nil)
-  (beginning-of-line (or (and arg (1+ arg)) 2))
-  (if (and arg (not (= 1 arg))) (message "%d lines copied" arg)))
-
-;; optional key binding
-(global-set-key (kbd "C-c C-k") 'copy-line)
-
-;; Reload file
-(defun my-reload-file ()
-  "Reload current file by reverting current buffer."
-  (interactive)
-  (revert-buffer t t t)
-  (message "Reload %s"
-           (buffer-file-name (current-buffer))))
-(global-unset-key (kbd "M-R"))
-(global-set-key (kbd "M-R") 'my-reload-file)
-
-;; Keyboard and locale
-;; Locales
-(setq locale-coding-system 'utf-8)
-(set-terminal-coding-system 'utf-8)
-(set-keyboard-coding-system 'utf-8)
-(set-selection-coding-system 'utf-8)
-(prefer-coding-system 'utf-8)
-
-;; Change Ctrl and Meta on Mac
-(setq mac-option-modifier 'super
-      mac-right-option-modifier nil
-      mac-command-modifier 'meta
-      select-enable-clipboard t)
-
-;;; Theme and fonts
-;; Font size
-(set-frame-font "Hack-14" nil t)
+                    ("q" nil "Quit" :color blue)))
+  (defhydra hydra-zoom (global-map "M-+")
+  "zoom"
+  ("g" text-scale-increase "in")
+  ("l" text-scale-decrease "out")))
 
 ;;Theme
 (load-theme 'tango-dark t)
-
-;; Transparency
-;; Taken from:
-;; https://www.reddit.com/r/emacs/comments/5rnpsm/
-;; nice_hydra_to_set_frame_transparency/
-;; With little modifications...
-(defun rae/set-transparency (inc)
-  "Change transparency in `INC' the selected frame transparency."
-  (let ((current-alpha
-         (or (frame-parameter (selected-frame) 'alpha) 80)))
-    (set-frame-parameter (selected-frame) 'alpha (+ current-alpha inc))))
-
-(defhydra hydra-transparency (:columns 2)
-  "
- Alpha : [ %(frame-parameter (selected-frame) 'alpha) ] "
-  ("j" (rae/set-transparency +1) "+ more")
-  ("k" (rae/set-transparency -1) "- less")
-  ("J" (rae/set-transparency +10) "++ more")
-  ("K" (rae/set-transparency -10) "-- less")
-  ("=" (lambda (value) (interactive "nTransparency Value 0 - 100 :")
-         (set-frame-parameter (selected-frame) 'alpha value)) "Set to ?" :color blue))
-(global-set-key (kbd "M-1") 'hydra-transparency/body)
-
-;; Dimmer focus current Buffer
-(use-package dimmer
-  :config (dimmer-activate))
 
 ;; Mode line
 ;; Mode line setup
@@ -695,4 +716,5 @@ Ease of use features:
                                 (toggle-frame-maximized)
                                 (elfeed-start)))
 (provide 'init)
+
 ;;; init.el ends here
