@@ -51,7 +51,6 @@
 (use-package eshell-git-prompt
   :config (eshell-git-prompt-use-theme 'git-radar))
 
-
 ;; Packages config using el-get-bundle macro
 ;; Avy jump
 (use-package avy
@@ -129,6 +128,12 @@
     (interactive)
     (kill-buffer)
     (jump-to-register :magit-fullscreen)))
+
+(use-package magithub
+  :after magit
+  :ensure t
+  :config
+  (magithub-feature-autoinject t))
 
 (use-package git-timemachine)
 
