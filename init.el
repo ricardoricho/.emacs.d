@@ -217,6 +217,7 @@
 
 ;; Smartparens
 (use-package smartparens
+  :delight
   :init
   (setq sp-highlight-pair-overlay nil
         sp-highlight-wrap-overlay nil
