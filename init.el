@@ -324,9 +324,15 @@
         org-clock-persistance 'history)
   :config
   (setq org-agenda-files (list "~/.emacs.d/org-files/origin.org")
-        org-capture-templates '(("c" "Create" entry
-                                 (file "~/.emacs.d/org-files/origin.org")
-                                 "* %^{prompt} %T %^g \n %?" :kill-buffer)))
+        org-capture-templates '(("e" "Emacs" entry
+                                 (file+headline "~/.emacs.d/org-files/origin.org" "Emacs")
+                                 "* %^{prompt} %T \n %?" :kill-buffer)
+                                ("j" "Jetty" entry
+                                 (file+headline "~/.emacs.d/org-files/origin.org" "Jetty")
+                                 "* TODO %^{task} %T %^g \n %?" :kill-buffer)
+                                ("i" "Ideas" entry
+                                 (file+headline "~/.emacs.d/org-files/origin.org" "Ideas")
+                                 "* %^{idea} %T %^g \n %?" :kill-buffer)))
   ;; Strike through DONE tasks
   (custom-set-faces
    '(org-done
