@@ -187,9 +187,12 @@
        ivy-todo-guess-list nil)
  :bind ("C-c o t" . ivy-todo)
  :commands ivy-todo)
-  :config
 
-(use-package ranger)
+(use-package ranger
+  :config
+  (setq ranger-preview-file t)
+  (setq ranger-max-preview-size 10))
+
 (use-package browse-at-remote)
 
 (use-package engine-mode
