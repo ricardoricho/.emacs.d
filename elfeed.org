@@ -1,0 +1,11 @@
+* Feeds                                                              :elfeed:
+** Emacs                                                              :Emacs:
+*** [[http://planet.emacsen.org/atom.xml][Planet emacs]]                                                       :Code:
+*** [[http://blog.cleancoder.com/atom.xml][Clean Code Blog]]                                                    :Code:
+** Science and tech                                                    :Tech:
+*** [[http://feeds.feedburner.com/GDBcode][Google Developers Blog]]
+*** [[https://www.ruby-lang.org/en/feeds/news.rss][Ruby news]]                                                          :Code:
+*** [[https://planet.lisp.org/rss20.xml][Planet lisp]]                                                        :Code:
+** General                                                          :General:
+*** [[http://espndeportes.espn.com/espn/rss/news][ESPN Deportes]]                                                  :Deportes:
+*** [[http://lachicadelbanquillo.com/feed][La chica del banquillo]]                                         :Deportes:
