@@ -22,8 +22,8 @@
 (use-package dash)
 
 ;; Custom Customizations
-(setq custom-file (expand-file-name "emacs-customizations.el"
-                                    user-emacs-directory))
+(setq custom-file (make-temp-file "emacs-customizations.el"))
+
 ;; Some hooks
 (add-hook 'prog-mode-hook 'subword-mode)
 (add-hook 'sql-interactive-mode-hook
