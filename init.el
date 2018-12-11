@@ -716,9 +716,7 @@ Ease of use features:
                     :foreground "#718c00")
 
 ;; Set actions for startup
-(add-hook 'emacs-startup-hook (lambda ()
-                                (toggle-frame-maximized)
-                                (elfeed-start)))
-(provide 'init)
+(add-hook 'emacs-startup-hook 'toggle-frame-maximized)
 
+(provide 'init)
 ;;; init.el ends here
