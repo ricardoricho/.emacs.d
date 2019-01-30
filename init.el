@@ -388,6 +388,9 @@ Ease of use features:
   (defengine apidock
     "http://apidock.com/rails/search?query=%s"
     :keybinding "a")
+  (defengine deepl
+    "https://www.deepl.com/translator#en/es/%s"
+    :keybinding "d")
   (defengine duckduckgo
     "https://duckduckgo.com/?q=%s"
     :keybinding "s")
