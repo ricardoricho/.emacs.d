@@ -409,9 +409,6 @@ Ease of use features:
     "https://developer.mozilla.org/en-US/search?q=%s"
     :keybinding "m"))
 
-;; Pivotal
-(use-package pivotal-tracker)
-
 ;; Smartparens
 (use-package smartparens
   :delight
