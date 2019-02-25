@@ -6,11 +6,10 @@ alias gco git chechout $*
 alias grep grep --color $*
 alias gss git status -s
 alias into heroku run rails c -r $*
-alias la ls -la
-alias ll ls -l
+alias la ls -la $*
+alias ll ls -l $*
 alias rdm bundle exec rake db:migrate
 alias rdms bundle exec rake db:migrate:status
 alias rdr bundle exec rake db:rollback
 alias rgm bundle exec rails g migration $*
-alias rm rm -r $*
 alias rrg bundle exec rake routes | grep $*
