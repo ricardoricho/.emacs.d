@@ -355,9 +355,9 @@ Ease of use features:
 ;; Projectile
 (use-package projectile-rails
   :init (setq projectile-completion-system 'ivy)
-  :load-path "~/.emacs.d/git/projectile-rails/"
   :config
   (projectile-rails-global-mode)
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
   (with-eval-after-load 'rake
     (setq rake-completion-system 'ivy-read)))
 
