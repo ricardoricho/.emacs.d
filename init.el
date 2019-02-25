@@ -246,12 +246,13 @@ Ease of use features:
 
 ;; Company
 (use-package company
-  :init
-  (add-hook 'after-init-hook 'global-company-mode)
-  (setq company-dabbrev-ignore-case t
-        company-minimum-prefix-length 2)
-  :delight
   :config
+  (setq company-dabbrev-ignore-case 'keep-prefix)
+  (setq company-minimum-prefix-length 3)
+  (setq company-tooltip-limit 20)                      ; bigger popup window
+  (setq company-tooltip-align-annotations 't)          ; align annotations to the right tooltip border
+  (setq company-idle-delay 0.3)                         ; decrease delay before autocompletion popup shows
+  (setq company-begin-commands '(self-insert-command)) ; start autocompletion only after typing
   ;; company with yasnippets
   (defvar company-mode/enable-yas t
     "enable yasnippet for all backends.")
@@ -262,7 +263,20 @@ Ease of use features:
         backend
       (append (if (consp backend) backend (list backend))
               '(:with company-yasnippet))))
-  :diminish company-mode)
+
+  ;; disable company in eshell
+  (setq company-global-modes '(not eshell-mode))
+
+  (global-set-key (kbd "s-SPC") 'company-yasnippet)
+  (define-key company-active-map (kbd "<return>") nil)
+  (define-key company-active-map (kbd "RET") nil)
+  (define-key company-active-map (kbd "M-<return>")
+    'company-complete-selection)
+  (global-company-mode))
+
+;; Company statistics
+(use-package company-statistics
+  :hook after-init-hook)
 
 ;; Swiper ivy counsel
 (use-package counsel
@@ -314,12 +328,6 @@ Ease of use features:
     (interactive)
     (kill-buffer)
     (jump-to-register :magit-fullscreen)))
-
-(use-package magithub
-  :after magit
-  :ensure t
-  :config
-  (magithub-feature-autoinject t))
 
 (use-package git-timemachine)
 
