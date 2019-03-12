@@ -58,6 +58,9 @@
 ;; Show parens
 (show-paren-mode 1)
 
+;; Indent with two spaces
+(setq tab-width 2)
+
 ;; Backups
 (setq
  backup-by-copying t
@@ -85,7 +88,7 @@
 (global-unset-key (kbd "M-i"))
 (global-unset-key (kbd "C-x C-b"))
 
-;; Previous window
+;; Previous windownn
 (defun rae-previous-window ()
   "Call `other-window with negative value."
   (interactive)
