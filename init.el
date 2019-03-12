@@ -399,12 +399,15 @@ Ease of use features:
   (defengine deepl
     "https://www.deepl.com/translator#en/es/%s"
     :keybinding "d")
-  (defengine duckduckgo
-    "https://duckduckgo.com/?q=%s"
-    :keybinding "s")
   (defengine github
     "https://github.com/search?q=%s"
     :keybinding "g")
+  (defengine rae
+    "https://dle.rae.es/?w=%s"
+    :keybinding "r")
+  (defengine duckduckgo
+    "https://duckduckgo.com/?q=%s"
+    :keybinding "s")
   (defengine mozilla
     "https://developer.mozilla.org/en-US/search?q=%s"
     :keybinding "m"))
