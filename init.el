@@ -329,6 +329,9 @@ Ease of use features:
     (kill-buffer)
     (jump-to-register :magit-fullscreen)))
 
+(use-package forge
+  :after magit)
+
 (use-package git-timemachine)
 
 (use-package haml-mode)
