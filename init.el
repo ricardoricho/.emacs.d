@@ -451,6 +451,9 @@ Ease of use features:
 ;; Elixir
 (use-package elixir-mode)
 
+;; Racket
+(use-package racket-mode)
+
 ;; Ruby
 (use-package ruby-mode
   :init
