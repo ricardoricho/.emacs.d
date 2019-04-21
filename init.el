@@ -228,10 +228,11 @@ Ease of use features:
 
 (use-package eshell
   :bind (("C-c e". eshell))
-  :config
+  :init
   (setq eshell-mv-interactive-query t
         eshell-cp-interactive-query t
         eshell-rm-interactive-query t)
+  :config
   (defadvice eshell (around eshell-fullscreen activate)
     (window-configuration-to-register :eshell-fullscreen)
     ad-do-it
