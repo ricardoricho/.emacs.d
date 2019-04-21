@@ -322,7 +322,7 @@ Ease of use features:
     (delete-other-windows))
 
   ;; Switch projectile use magit-status-internal
-  (defadvice magit-status-internal (around magit-fullscreen activate)
+  (defadvice magit-status-setup-buffer (around magit-fullscreen activate)
     (window-configuration-to-register :magit-fullscreen)
     ad-do-it
     (delete-other-windows))
@@ -376,7 +376,7 @@ Ease of use features:
         (lambda (project)
           (let ((projectile-switch-project-action
                  (lambda ()
-                   (magit-status-internal default-directory)
+                   (magit-status-setup-buffer default-directory)
                    (counsel-projectile ivy-current-prefix-arg))))
             (counsel-projectile-switch-project-by-name project)))))
 
