@@ -356,13 +356,20 @@ Ease of use features:
   :delight (projectile-mode (:eval (format " [%s]" (projectile-project-name))))
   :config
   (counsel-projectile-mode)
+  (setq projectile-switch-project-action
+        (lambda ()
+          (magit-status-setup-buffer default-directory)
+          (counsel-projectile ivy-current-prefix-arg)))
   (setq counsel-projectile-switch-project-action
         (lambda (project)
-          (let ((projectile-switch-project-action
-                 (lambda ()
-                   (magit-status-setup-buffer default-directory)
-                   (counsel-projectile ivy-current-prefix-arg))))
-            (counsel-projectile-switch-project-by-name project)))))
+          (counsel-projectile-switch-project-by-name project))))
+
+(use-package perspective
+  :config
+  (persp-mode))
+
+(use-package persp-projectile
+  :after (counsel-projectile perspective))
 
 ;; Ivy todo
 (use-package ivy-todo
@@ -491,8 +498,15 @@ Ease of use features:
   :config
   (global-undo-tree-mode))
 
+;; Do not use
+;; (use-package eyebrowse
+;;   :init
+;;   (setq eyebrowse-keymap-prefix (kbd "C-c w"))
+;;   :config
+;;   (eyebrowse-mode))
+
 ;; Checkout
-;; bbastrov perspective (projects)
+;; eyebrowes (windows) -- try don't use
 ;; yuya373/emacs-slack
 
 (use-package buffer-move
