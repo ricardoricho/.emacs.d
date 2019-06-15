@@ -251,31 +251,22 @@ Ease of use features:
 ;; Company
 (use-package company
   :config
-  (setq company-dabbrev-ignore-case 'keep-prefix)
+  (setq company-idle-delay 0.5)
+  (setq company-show-numbers t)
+  (setq company-tooltip-limit 10)
   (setq company-minimum-prefix-length 3)
-  (setq company-tooltip-limit 20)                      ; bigger popup window
-  (setq company-tooltip-align-annotations 't)          ; align annotations to the right tooltip border
-  (setq company-idle-delay 0.3)                         ; decrease delay before autocompletion popup shows
-  (setq company-begin-commands '(self-insert-command)) ; start autocompletion only after typing
-  ;; company with yasnippets
-  (defvar company-mode/enable-yas t
-    "enable yasnippet for all backends.")
-
-  (defun company-mode/backend-with-yas (backend)
-    (if (or (not company-mode/enable-yas)
-            (and (listp backend) (member 'company-yasnippet backend)))
-        backend
-      (append (if (consp backend) backend (list backend))
-              '(:with company-yasnippet))))
+  (setq company-tooltip-align-annotations t)
+  (setq company-tooltip-flip-when-above t)
 
   ;; disable company in eshell
   (setq company-global-modes '(not eshell-mode))
 
-  (global-set-key (kbd "s-SPC") 'company-yasnippet)
-  (define-key company-active-map (kbd "<return>") nil)
+  ;; complete
+  (add-to-list 'company-backends '(company-capf company-dabbrev))
+
+  (define-key company-active-map [return] nil)
   (define-key company-active-map (kbd "RET") nil)
-  (define-key company-active-map (kbd "M-<return>")
-    'company-complete-selection)
+  (define-key company-active-map (kbd "M-<return>") 'company-complete-selection)
   (global-company-mode))
 
 ;; Company statistics
@@ -340,15 +331,8 @@ Ease of use features:
 
 (use-package haml-mode)
 
-(use-package yasnippet-snippets)
 
-(use-package yasnippet
   :config
-  (require 'yasnippet)
-  (define-key yas-minor-mode-map (kbd "<tab>") nil)
-  (define-key yas-minor-mode-map (kbd "TAB") nil)
-  (yas-global-mode 1))
-
 (use-package swift-mode)
 
 ;; Move text
@@ -470,12 +454,16 @@ Ease of use features:
   :hook ((ruby-mode . rubocop-mode)))
 
 (use-package rspec-mode
-  :init
-  (eval-after-load 'rspec-mode
-    '(rspec-install-snippets)))
+  :config
+  (setq rspec-use-spring-when-possible nil))
 
 (use-package aggressive-indent
   :hook ((ruby-mode . aggressive-indent-mode)))
+
+(use-package origami
+  :config
+  (global-origami-mode)
+  :bind (("C-c f" . origami-toggle-node)))
 
 (use-package flycheck
   :init
@@ -483,7 +471,6 @@ Ease of use features:
 
 (use-package ag)
 (use-package markdown-mode)
-(use-package minitest)
 (use-package css-mode
   :config
   (setq css-indent-offset 2))
