@@ -352,8 +352,10 @@ Ease of use features:
   (with-eval-after-load 'rake
     (setq rake-completion-system 'ivy-read)))
 
+;; Delight, persp-projectile take care.
+;; (projectile-mode (:eval (format " [%s]" (projectile-project-name))))
 (use-package counsel-projectile
-  :delight (projectile-mode (:eval (format " [%s]" (projectile-project-name))))
+  :delight projectile-mode
   :config
   (counsel-projectile-mode)
   (setq projectile-switch-project-action
