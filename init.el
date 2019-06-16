@@ -475,6 +475,7 @@ Ease of use features:
   :bind (("C-c f" . origami-toggle-node)))
 
 (use-package flycheck
+  :delight
   :init
   (global-flycheck-mode))
 
@@ -497,6 +498,7 @@ Ease of use features:
          ("\\.restclient\\'" . restclient-mode)))
 
 (use-package undo-tree
+  :delight
   :config
   (global-undo-tree-mode))
 
