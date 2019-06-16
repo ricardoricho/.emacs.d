@@ -446,7 +446,10 @@ Ease of use features:
 (use-package elixir-mode)
 
 ;; Racket
-(use-package racket-mode)
+(use-package racket-mode
+  :config
+  ;; Where homebrew installed racket.
+  (setq racket-program "/usr/local/bin/racket"))
 
 ;; Ruby
 (use-package ruby-mode
