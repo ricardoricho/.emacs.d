@@ -238,6 +238,11 @@ Ease of use features:
     ad-do-it
     (delete-other-windows)))
 
+(use-package pcmpl-homebrew
+  :after eshell)
+(use-package pcmpl-args
+  :after eshell)
+
 (use-package eshell-git-prompt
   :config (eshell-git-prompt-use-theme 'git-radar))
 
