@@ -238,6 +238,7 @@ Ease of use features:
     ad-do-it
     (delete-other-windows)))
 
+;; Autocomplete packages for eshell.
 (use-package pcmpl-homebrew
   :after eshell)
 (use-package pcmpl-args
@@ -331,11 +332,9 @@ Ease of use features:
 
 (use-package forge
   :after magit)
-
+(use-package github-review
+  :after forge)
 (use-package git-timemachine)
-
-;; Check gihub PR
-(use-package github-review)
 
 (use-package haml-mode)
 
