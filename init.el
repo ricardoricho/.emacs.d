@@ -334,6 +334,9 @@ Ease of use features:
 
 (use-package git-timemachine)
 
+;; Check gihub PR
+(use-package github-review)
+
 (use-package haml-mode)
 
 
