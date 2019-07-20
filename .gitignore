@@ -7,6 +7,7 @@ elpa
 emacs-customizations.el
 eshell/history
 eshell/lastdir
+forge-database.sqlite
 git
 org-files
 projectile*
