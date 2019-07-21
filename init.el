@@ -251,7 +251,7 @@ Ease of use features:
 ;; Avy jump
 (use-package avy
   :bind (("C-0" . avy-goto-word-or-subword-1)
-         ("C-c 0" . avy-goto-char)
+         ("C-c 0" . avy-goto-char-timer)
          ("C-c l" . avy-goto-line)))
 
 ;; Company
