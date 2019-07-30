@@ -449,6 +449,11 @@ Ease of use features:
   :init
   (setq coffee-tab-width 2))
 
+;; Node
+;; https://github.com/mojochao/npm-mode#project-activation
+;; https://www.emacswiki.org/emacs/DirectoryVariables
+(use-package npm-mode)
+
 ;; Elixir
 (use-package elixir-mode)
 
