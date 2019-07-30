@@ -517,13 +517,6 @@ Ease of use features:
   :config
   (global-undo-tree-mode))
 
-;; Do not use
-;; (use-package eyebrowse
-;;   :init
-;;   (setq eyebrowse-keymap-prefix (kbd "C-c w"))
-;;   :config
-;;   (eyebrowse-mode))
-
 ;; Checkout
 ;; eyebrowes (windows) -- try don't use
 ;; yuya373/emacs-slack
@@ -578,6 +571,7 @@ Ease of use features:
   :bind (("C-c o a" . org-agenda)
          ("C-c o c" . org-capture)
          ("C-c o l" . org-store-link)))
+
 ;; Elfeed
 (use-package elfeed
   :config
