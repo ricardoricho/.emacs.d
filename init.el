@@ -249,8 +249,8 @@ Ease of use features:
 ;; Packages config using el-get-bundle macro
 ;; Avy jump
 (use-package avy
-  :bind (("C-0" . avy-goto-word-or-subword-1)
-         ("C-c 0" . avy-goto-char-timer)
+  :bind (("C-0" . avy-goto-char-timer)
+         ("C-c 0" . avy-goto-word-or-subword-1)
          ("C-c l" . avy-goto-line)))
 
 ;; Company
