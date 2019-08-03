@@ -27,12 +27,11 @@
 ;; Some hooks
 (add-hook 'prog-mode-hook 'subword-mode)
 (add-hook 'sql-interactive-mode-hook
-            (lambda ()
-              (setq sql-prompt-regexp "^[_[:alpha:]]*[=][#>] ")
-              (setq sql-prompt-cont-regexp "^[_[:alpha:]]*[-][#>] ")))
+          (lambda ()
+            (defvar sql-prompt-regexp "^[_[:alpha:]]*[=][#>] ")
+            (defvar sql-prompt-cont-regexp "^[_[:alpha:]]*[-][#>] ")))
 
 (load "~/.emacs.d/secrets.el")
-
 
 ;; Default configs
 
@@ -229,9 +228,9 @@ Ease of use features:
 (use-package eshell
   :bind (("C-c e". eshell))
   :init
-  (setq eshell-mv-interactive-query t
-        eshell-cp-interactive-query t
-        eshell-rm-interactive-query t)
+  (defvar eshell-mv-interactive-query t)
+  (defvar eshell-cp-interactive-query t)
+  (defvar eshell-rm-interactive-query t)
   :config
   (defadvice eshell (around eshell-fullscreen activate)
     (window-configuration-to-register :eshell-fullscreen)
@@ -369,9 +368,9 @@ Ease of use features:
         (lambda ()
           (magit-status-setup-buffer default-directory)
           (counsel-projectile ivy-current-prefix-arg)))
-  (setq counsel-projectile-switch-project-action
-        (lambda (project)
-          (counsel-projectile-switch-project-by-name project))))
+  (defvar counsel-projectile-switch-project-action
+    (lambda (project)
+      (counsel-projectile-switch-project-by-name project))))
 
 (use-package perspective
   :config
@@ -538,10 +537,10 @@ Ease of use features:
 ;; Org-mode
 (use-package org
   :init
-  (setq org-log-done 'time
-        org-time-stamp-formats '("<%Y-%m-%d %a>" . "<%Y-%m-%d %a %H:%M:%S>")
-        org-fontify-done-headline t
-        org-clock-persistance 'history)
+  (setq org-log-done 'time)
+  (setq org-time-stamp-formats '("<%Y-%m-%d %a>" . "<%Y-%m-%d %a %H:%M:%S>"))
+  (setq org-fontify-done-headline t)
+  (defvar org-clock-persistance 'history)
   :config
   (setq org-agenda-files (list "~/.emacs.d/org-files/origin.org"))
   (setq org-capture-templates
