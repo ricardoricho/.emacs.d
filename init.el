@@ -369,6 +369,10 @@ Ease of use features:
         (lambda ()
           (magit-status-setup-buffer default-directory)
           (counsel-projectile ivy-current-prefix-arg)))
+  (setq counsel-projectile-org-capture-templates
+        '(("t" "[${name}] Task" entry
+           (file+headline "~/.emacs.d/org-files/projects.org" "${name}")
+           "* TODO %^{todo} %^g \n %T \n %?")))
   (defvar counsel-projectile-switch-project-action
     (lambda (project)
       (counsel-projectile-switch-project-by-name project))))
@@ -384,7 +388,7 @@ Ease of use features:
 (use-package ivy-todo
  :load-path "~/.emacs.d/git/ivy-todo"
  :init
- (setq ivy-todo-file "~/.emacs.d/org-files/origin.org"
+ (setq ivy-todo-file "~/.emacs.d/org-files/projects.org"
        ivy-todo-guess-list nil)
  :bind ("C-c o t" . ivy-todo)
  :commands ivy-todo)
@@ -543,20 +547,13 @@ Ease of use features:
   (setq org-fontify-done-headline t)
   (defvar org-clock-persistance 'history)
   :config
-  (setq org-agenda-files (list "~/.emacs.d/org-files/origin.org"))
-  (setq org-capture-templates
-        '(("e" "Emacs" entry
-           (file+headline "~/.emacs.d/org-files/origin.org" "Emacs")
-           "* %^{prompt} %T \n %?")
-           ("j" "Jetty" entry
-            (file+headline "~/.emacs.d/org-files/origin.org" "Jetty")
-            "* TODO %^{task} %T %^g \n %?")
-           ("i" "Ideas" entry
-            (file+headline "~/.emacs.d/org-files/origin.org" "Ideas")
-            "* TODO %^{idea} %T %^g \n %?")
-           ("t" "Continuations" entry
-            (file "~/Documents/coroutines-continuations/continuations.org")
-            "* %^{entry} %^g \n %?" :kill-buffer t)))
+  (setq org-agenda-files (list "~/.emacs.d/org-files/origin.org"
+                               "~/.emacs.d/org-files/projects.org"))
+  (defvar org-capture-templates
+    '(("i" "Ideas" entry
+       (file+headline "~/.emacs.d/org-files/origin.org" "Ideas")
+       "* TODO %^{idea} %T %^g \n %?")))
+
   ;; Strike through DONE tasks
   (custom-set-faces
    '(org-done
@@ -566,11 +563,7 @@ Ease of use features:
 
   (setq org-ellipsis "⤵")
   (define-key org-mode-map (kbd "M-p") 'org-move-subtree-up)
-  (define-key org-mode-map (kbd "M-n") 'org-move-subtree-down)
-
-  :bind (("C-c o a" . org-agenda)
-         ("C-c o c" . org-capture)
-         ("C-c o l" . org-store-link)))
+  (define-key org-mode-map (kbd "M-n") 'org-move-subtree-down))
 
 ;; Elfeed
 (use-package elfeed
@@ -599,7 +592,7 @@ Ease of use features:
 (use-package ivy-todo
  :load-path "~/.emacs.d/git/ivy-todo"
  :init
- (setq ivy-todo-file "~/.emacs.d/org-files/origin.org"
+ (setq ivy-todo-file "~/.emacs.d/org-files/projects.org"
        ivy-todo-guess-list nil)
  :bind ("C-c o t" . ivy-todo)
  :commands ivy-todo)
