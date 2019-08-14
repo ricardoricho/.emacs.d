@@ -26,6 +26,7 @@
 
 ;; Some hooks
 (add-hook 'prog-mode-hook 'subword-mode)
+(add-hook 'text-mode-hook 'turn-on-auto-fill)
 (add-hook 'sql-interactive-mode-hook
           (lambda ()
             (defvar sql-prompt-regexp "^[_[:alpha:]]*[=][#>] ")
