@@ -362,7 +362,9 @@ Ease of use features:
 ;; Delight, persp-projectile take care.
 ;; (projectile-mode (:eval (format " [%s]" (projectile-project-name))))
 (use-package counsel-projectile
+  :after counsel
   :delight projectile-mode
+  :bind (("C-x b" . counsel-projectile-switch-to-buffer))
   :config
   (counsel-projectile-mode)
   (setq projectile-switch-project-action
