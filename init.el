@@ -17,7 +17,7 @@
 (eval-when-compile
   (require 'use-package))
 
-(require 'bind-key)                ;; if you use any :bind variant
+(require 'bind-key)
 (use-package delight)
 (use-package dash)
 
@@ -318,7 +318,6 @@ Ease of use features:
     ad-do-it
     (delete-other-windows))
 
-  ;; Switch projectile use magit-status-internal
   (defadvice magit-status-setup-buffer (around magit-fullscreen activate)
     (window-configuration-to-register :magit-fullscreen)
     ad-do-it
@@ -330,16 +329,11 @@ Ease of use features:
     (kill-buffer)
     (jump-to-register :magit-fullscreen)))
 
-(use-package forge
-  :after magit)
-(use-package github-review
-  :after forge)
+(use-package forge :after magit)
+(use-package github-review :after forge)
 (use-package git-timemachine)
 
 (use-package haml-mode)
-
-
-  :config
 (use-package swift-mode)
 
 ;; Move text
@@ -351,33 +345,25 @@ Ease of use features:
   :bind (("C-=" . er/expand-region)))
 
 ;; Projectile
-(use-package projectile-rails
-  :init (setq projectile-completion-system 'ivy)
+(use-package projectile
+  :delight ""
+  :init
+  (setq projectile-completion-system 'ivy)
   :config
-  (projectile-rails-global-mode)
   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-  (with-eval-after-load 'rake
-    (setq rake-completion-system 'ivy-read)))
-
-;; Delight, persp-projectile take care.
-;; (projectile-mode (:eval (format " [%s]" (projectile-project-name))))
-(use-package counsel-projectile
-  :after counsel
-  :delight projectile-mode
-  :bind (("C-x b" . counsel-projectile-switch-to-buffer))
-  :config
-  (counsel-projectile-mode)
   (setq projectile-switch-project-action
         (lambda ()
           (magit-status-setup-buffer default-directory)
-          (counsel-projectile ivy-current-prefix-arg)))
-  (setq counsel-projectile-org-capture-templates
-        '(("t" "[${name}] Task" entry
-           (file+headline "~/.emacs.d/org-files/projects.org" "${name}")
-           "* TODO %^{todo} %^g \n %T \n %?")))
-  (defvar counsel-projectile-switch-project-action
-    (lambda (project)
-      (counsel-projectile-switch-project-by-name project))))
+          (projectile-find-file ivy-current-prefix-arg))))
+
+;; Delight, persp-projectile take care.
+(use-package counsel-projectile
+  :config
+  (counsel-projectile-mode)
+  (defvar counsel-projectile-org-capture-templates
+    '(("t" "[${name}] Task" entry
+       (file+headline "~/.emacs.d/org-files/projects.org" "${name}")
+       "* TODO %^{todo} %^g \n %T \n %?"))))
 
 (use-package perspective
   :config
@@ -385,6 +371,12 @@ Ease of use features:
 
 (use-package persp-projectile
   :after (counsel-projectile perspective))
+
+(use-package projectile-rails
+  :config
+  (projectile-rails-global-mode)
+  (with-eval-after-load 'rake
+    (setq rake-completion-system 'ivy-read)))
 
 ;; Ivy todo
 (use-package ivy-todo
