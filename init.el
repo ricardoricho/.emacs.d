@@ -445,6 +445,10 @@ Ease of use features:
         web-mode-css-indent-offset 2
         web-mode-code-indent-offset 2
         web-mode-indent-style 2))
+;; JSON- mode
+(use-package json
+  :config
+  (defvar json-reformat:indent-width 2))
 
 ;; Coffee-mode
 (use-package coffee-mode
