@@ -359,11 +359,14 @@ Ease of use features:
 ;; Delight, persp-projectile take care.
 (use-package counsel-projectile
   :config
-  (counsel-projectile-mode)
-  (defvar counsel-projectile-org-capture-templates
-    '(("t" "[${name}] Task" entry
-       (file+headline "~/.emacs.d/org-files/projects.org" "${name}")
-       "* TODO %^{todo} %^g \n %T \n %?"))))
+  (setq counsel-projectile-org-capture-templates
+        '(("f" "Todo for ${name}" entry
+           (file+headline "~/.emacs.d/org-files/projects.org" "${name}")
+           "* TODO %^{todo} %^g \n %T \n %?")
+          ("i" "Todo in ${name}" entry
+           (file+headline "${root}/todo.org" "${name}")
+           "* TODO %^{todo} %^g \n %T \n %?")))
+  (counsel-projectile-mode))
 
 (use-package perspective
   :config
@@ -544,16 +547,14 @@ Ease of use features:
   (setq org-agenda-files (list "~/.emacs.d/org-files/origin.org"
                                "~/.emacs.d/org-files/projects.org"))
   (defvar org-capture-templates
-    '(("i" "Ideas" entry
+    '(("c" "General [c]apture" entry
        (file+headline "~/.emacs.d/org-files/origin.org" "Ideas")
        "* TODO %^{idea} %T %^g \n %?")))
 
   ;; Strike through DONE tasks
   (custom-set-faces
-   '(org-done
-     ((t (:strike-through t))))
-   '(org-headline-done
-     ((t (:strike-through t)))))
+   '(org-done ((t (:strike-through t))))
+   '(org-headline-done ((t (:strike-through t)))))
 
   (setq org-ellipsis "⤵")
   (define-key org-mode-map (kbd "M-p") 'org-move-subtree-up)
