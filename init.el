@@ -430,7 +430,8 @@ Ease of use features:
   :config
   (require 'smartparens-config)
   (smartparens-global-mode t)
-  (define-key smartparens-mode-map (kbd "<M-S-backspace>") 'sp-unwrap-sexp))
+  (define-key smartparens-mode-map (kbd "<M-S-backspace>") 'sp-unwrap-sexp)
+  (define-key smartparens-mode-map (kbd "M-S-f") 'sp-forward-sexp))
 
 ;; Latex
 (use-package tex
