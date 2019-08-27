@@ -344,6 +344,8 @@ Ease of use features:
 (use-package expand-region
   :bind (("C-=" . er/expand-region)))
 
+(use-package ag)
+
 ;; Projectile
 (use-package projectile
   :delight ""
@@ -500,7 +502,6 @@ Ease of use features:
   :init
   (global-flycheck-mode))
 
-(use-package ag)
 (use-package markdown-mode)
 (use-package css-mode
   :config
