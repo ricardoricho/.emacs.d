@@ -40,7 +40,7 @@
 ;; Disable startup message
 (setq inhibit-startup-message t)
 
-;; Quit tool-bar
+;; Remove tool-bar
 (tool-bar-mode -1)
 
 ;; No scrollbar
@@ -253,6 +253,14 @@ Ease of use features:
   :bind (("C-0" . avy-goto-char-timer)
          ("C-c 0" . avy-goto-word-or-subword-1)
          ("C-c l" . avy-goto-line)))
+
+;; Beacon - Highlight cursor
+(use-package beacon
+  :bind (("C-c b b" . beacon-blink))
+  :config
+  (setq beacon-blink-duration 0.8)
+  (setq beacon-size 80)
+  (beacon-mode 1))
 
 ;; Company
 (use-package company
