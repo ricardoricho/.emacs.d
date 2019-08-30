@@ -395,7 +395,10 @@ Ease of use features:
   (persp-mode))
 
 (use-package persp-projectile
-  :after (counsel-projectile perspective))
+  :after (counsel-projectile perspective)
+  :config
+  (define-key projectile-mode-map
+    (kbd "C-c p p") 'projectile-persp-switch-project))
 
 (use-package projectile-rails
   :config
