@@ -88,12 +88,24 @@
 (global-unset-key (kbd "M-i"))
 (global-unset-key (kbd "C-x C-b"))
 
-;; Previous windownn
+;; Previous window
 (defun rae-previous-window ()
   "Call `other-window with negative value."
   (interactive)
   (other-window -1))
 (global-set-key (kbd "C-x p") 'rae-previous-window)
+
+;; Previous frame
+(defun rae-previous-frame ()
+  "Call `other-frame with negative value."
+  (interactive)
+  (other-frame -1))
+
+;; Frames
+(global-set-key (kbd "C-c N") 'make-frame-command)
+(global-set-key (kbd "C-c X") 'delete-frame)
+(global-set-key (kbd "C-x O") 'other-frame)
+(global-set-key (kbd "C-x P") 'rae-previous-frame)
 
 ;; Auto-resize window
 (defadvice other-window (after rae-resize-window activate)
