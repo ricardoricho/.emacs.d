@@ -23,6 +23,7 @@
 
 ;; Custom Customizations
 (setq custom-file (make-temp-file "emacs-customizations.el"))
+(load "~/.emacs.d/secrets.el")
 
 ;; Some hooks
 (add-hook 'prog-mode-hook 'subword-mode)
@@ -32,32 +33,17 @@
             (defvar sql-prompt-regexp "^[_[:alpha:]]*[=][#>] ")
             (defvar sql-prompt-cont-regexp "^[_[:alpha:]]*[-][#>] ")))
 
-(load "~/.emacs.d/secrets.el")
-
-;; Default configs
-
 ;; Personal config
 ;; Disable startup message
 (setq inhibit-startup-message t)
-
-;; Remove tool-bar
 (tool-bar-mode -1)
-
-;; No scrollbar
 (scroll-bar-mode -1)
-
+(show-paren-mode 1)
+(column-number-mode 1)
 ;; Turn off alarms
 (setq ring-bell-function 'ignore)
-
 ;; Typed text delete selection
 (pending-delete-mode 1)
-
-;; Show column
-(column-number-mode 1)
-
-;; Show parens
-(show-paren-mode 1)
-
 ;; Indent with two spaces
 (setq tab-width 2)
 
@@ -78,10 +64,17 @@
 (winner-mode 1)
 
 ;; Join lines
-(global-set-key (kbd "C-j") 'join-line)
+(global-set-key (kbd "M-J") 'join-line)
 
 ;; Delete whitespaces
-(global-set-key (kbd "M-_") 'delete-horizontal-space)
+(defun rae-kiill-word-or-whitespaces (arg)
+  "Kill a word (`ARG')or remove whitespaces."
+  (interactive "p")
+  (let ((next-char (following-char)))
+    (cond
+     ((eql 32 next-char) (delete-horizontal-space))
+     ('else (kill-word arg)))))
+(global-set-key (kbd "M-D") 'rae-kiill-word-or-whitespaces)
 
 ;; Unbindings
 (global-unset-key (kbd "C-z"))
