@@ -604,6 +604,9 @@ Ease of use features:
   (setq elfeed-goodies/entry-pane-position 'bottom
         elfeed-goodies/entry-pane-size 0.65))
 
+;; Twitter
+(use-package twittering-mode)
+
 ;; Ivy todo
 (use-package ivy-todo
  :load-path "~/.emacs.d/git/ivy-todo"
