@@ -385,7 +385,8 @@ Ease of use features:
 
 (use-package perspective
   :config
-  (persp-mode))
+  (persp-mode)
+  (set-face-foreground 'persp-selected-face "#729fcf"))
 
 (use-package persp-projectile
   :after (counsel-projectile perspective)
