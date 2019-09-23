@@ -631,6 +631,28 @@ Ease of use features:
       ("a" mc/mark-all-like-this "all")
       ("q" nil "Quit"))))
 
+(use-package dumb-jump
+  :after hydra
+  :config
+  (defvar dumb-jump-selector 'ivy)
+  ;; https://github.com/jacktasia/dumb-jump#hydra-for-effieciency
+  (global-set-key
+   (kbd "M-g")
+   (defhydra dumb-jump-hydra ( :color blue :columns 3)
+     "Go to -"
+     ("SPC" dumb-jump-go-prompt "Prompt")
+     ("b" dumb-jump-back "Back")
+     ("d" counsel-dash "Dash")
+     ("e" dumb-jump-go-prefer-external "Go external")
+     ("f" goto-line "Line")
+     ("g" dumb-jump-go-prefer-external-other-window "Go external other window")
+     ("l" dumb-jump-quick-look "Quick look")
+     ("o" dumb-jump-go-other-window "Other window")
+     ("q" nil "Quit" :color blue)
+     ("r" browse-at-remote "git remote url")
+     ("u" browse-url "Url")
+     ("j" dumb-jump-go "Go"))))
+
 (use-package hydra
   :config
   ;; Hydras
@@ -649,7 +671,7 @@ Ease of use features:
                     ("dd" kill-whole-line "Kill whole line")
                     ("h" backward-char "Backward")
                     ("l" forward-char "Forward char")
-                    ("j" forward-line "Forward line")
+                    ("j" next-line "Forward line")
                     ("k" previous-line "Backward line")
                     ("{" backward-paragraph "Backward paragraph")
                     ("}" forward-paragraph "Forward paragraph")
@@ -657,13 +679,6 @@ Ease of use features:
                     ("c" recenter-top-bottom "Center")
                     ("m" set-mark-command "mark" :bind nil)
                     ("q" nil "Quit")))
-  (global-set-key (kbd "C-c g")
-                  (defhydra hydra-go (:colums 2)
-                    "Go to"
-                    ("l" goto-line "Line")
-                    ("u" browse-url "Url")
-                    ("r" browse-at-remote "Remote")
-                    ("q" nil "Quit" :color blue)))
   (defhydra hydra-zoom (global-map "M-+")
   "zoom"
   ("g" text-scale-increase "in")
