@@ -262,11 +262,12 @@ Ease of use features:
 
 ;; Beacon - Highlight cursor
 (use-package beacon
-  :bind (("C-c b b" . beacon-blink))
-  :config
-  (setq beacon-blink-duration 0.8)
+  :init
+  (setq beacon-blink-duration 0.5)
   (setq beacon-size 80)
-  (beacon-mode 1))
+  :config
+  (beacon-mode 1)
+  :bind (("C-c b b" . beacon-blink)))
 
 ;; Company
 (use-package company
