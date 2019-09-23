@@ -304,6 +304,7 @@ Ease of use features:
   :bind (("C-s" . swiper)
          ("C-x b". ivy-switch-buffer)
          ("C-x C-f" . counsel-find-file)
+         ("M-x" . counsel-M-x)
          ("M-y" . counsel-yank-pop) :map ivy-minibuffer-map
          ("M-y" . ivy-next-line))
   :config
@@ -316,11 +317,7 @@ Ease of use features:
    ("C-h k" . #'helpful-key)
    ("C-c C-." . #'helpful-at-point)))
 
-;; Smex (using abo-abo github repo)
-(use-package smex
-  :load-path "~/.emacs.d/git/smex/"
-  :init (setq smex-completion-method 'ivy)
-  :bind (("M-x" . smex)))
+(use-package smex)
 
 ;; Magit
 (use-package magit
