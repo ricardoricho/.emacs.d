@@ -441,7 +441,6 @@ Ease of use features:
 
 ;; Smartparens
 (use-package smartparens
-  :delight
   :init
   (setq sp-highlight-pair-overlay nil
         sp-highlight-wrap-overlay nil
@@ -450,7 +449,8 @@ Ease of use features:
   (require 'smartparens-config)
   (smartparens-global-mode t)
   (define-key smartparens-mode-map (kbd "<M-S-backspace>") 'sp-unwrap-sexp)
-  (define-key smartparens-mode-map (kbd "M-S-f") 'sp-forward-sexp))
+  (define-key smartparens-mode-map (kbd "M-F") 'sp-forward-sexp)
+  (define-key smartparens-mode-map (kbd "M-B") 'sp-backward-sexp))
 
 ;; Latex
 (use-package tex
@@ -603,8 +603,10 @@ Ease of use features:
   :after (elfeed)
   :config
   (elfeed-goodies/setup)
-  (setq elfeed-goodies/entry-pane-position 'bottom
-        elfeed-goodies/entry-pane-size 0.65))
+  (setq elfeed-goodies/entry-pane-position 'bottom)
+  (setq elfeed-goodies/entry-pane-size 0.65)
+  (define-key elfeed-show-mode-map "j" 'next-line)
+  (define-key elfeed-show-mode-map "k" 'previous-line))
 
 ;; Twitter
 (use-package twittering-mode)
