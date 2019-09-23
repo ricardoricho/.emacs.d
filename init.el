@@ -401,6 +401,8 @@ Ease of use features:
   (with-eval-after-load 'rake
     (setq rake-completion-system 'ivy-read)))
 
+(use-package counsel-dash)
+
 ;; Ivy todo
 (use-package ivy-todo
  :load-path "~/.emacs.d/git/ivy-todo"
