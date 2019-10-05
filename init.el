@@ -579,7 +579,8 @@ Ease of use features:
     (elfeed-db-load)
     (elfeed)
     (delete-other-windows)
-    (elfeed-search-update--force)))
+    (elfeed-search-update))
+  (define-key global-map (kbd "C-c F") 'elfeed-start))
 
 (use-package elfeed-org
   :config
@@ -594,6 +595,10 @@ Ease of use features:
   (setq elfeed-goodies/entry-pane-size 0.65)
   (define-key elfeed-show-mode-map "j" 'next-line)
   (define-key elfeed-show-mode-map "k" 'previous-line))
+
+;; Pocket
+(use-package pocket-reader
+  :bind (("C-c R" . pocket-reader)))
 
 ;; Twitter
 (use-package twittering-mode)
