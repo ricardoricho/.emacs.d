@@ -1,11 +1,12 @@
 ;;; init.el -- Config file using el-get
 ;;; Commentary:
+;; Pagckages once tryed and do no use anymore
+;; eyebrowes (windows)
+;; Dimmer focus current Buffer
+;;
+;; Packege to try
+;; yuya373/emacs-slack
 ;;; Code:
-
-;; Added by Package.el.  This must come before configurations of
-;; installed packages.  Don't delete this line.  If you don't want it,
-;; just comment it out by adding a semicolon to the start of the line.
-;; You may delete these explanatory comments.
 (require 'package)
 (add-to-list 'package-archives
              '("melpa" . "https://melpa.org/packages/") t)
@@ -224,9 +225,6 @@ Ease of use features:
          (set-frame-parameter (selected-frame) 'alpha value)) "Set to ?" :color blue))
 (global-set-key (kbd "M-1") 'hydra-transparency/body)
 
-;; Dimmer focus current Buffer
-(use-package dimmer)
-
 ;; Packages
 (use-package exec-path-from-shell
   :if (memq window-system '(mac ns x))
@@ -402,19 +400,17 @@ Ease of use features:
 
 ;; Ivy todo
 (use-package ivy-todo
- :load-path "~/.emacs.d/git/ivy-todo"
- :init
- (setq ivy-todo-file "~/.emacs.d/org-files/projects.org"
-       ivy-todo-guess-list nil)
- :bind ("C-c o t" . ivy-todo)
- :commands ivy-todo)
+  :load-path "~/.emacs.d/git/ivy-todo"
+  :init
+  (setq ivy-todo-file "~/.emacs.d/org-files/projects.org"
+        ivy-todo-guess-list nil)
+  :bind ("C-c o t" . ivy-todo)
+  :commands ivy-todo)
 
 (use-package ranger
   :config
   (setq ranger-preview-file t)
   (setq ranger-max-preview-size 10))
-
-(use-package browse-at-remote)
 
 (use-package engine-mode
   :config
@@ -480,7 +476,8 @@ Ease of use features:
 (use-package npm-mode)
 
 ;; Elixir
-(use-package elixir-mode)
+(use-package alchemist)
+
 
 ;; Racket
 (use-package racket-mode
@@ -540,10 +537,6 @@ Ease of use features:
   :delight
   :config
   (global-undo-tree-mode))
-
-;; Checkout
-;; eyebrowes (windows) -- try don't use
-;; yuya373/emacs-slack
 
 (use-package buffer-move
   :bind (("C-c w" . rae-buffer-move-hydra/body))
@@ -649,7 +642,6 @@ Ease of use features:
      ("l" dumb-jump-quick-look "Quick look")
      ("o" dumb-jump-go-other-window "Other window")
      ("q" nil "Quit" :color blue)
-     ("r" browse-at-remote "git remote url")
      ("u" browse-url "Url")
      ("j" dumb-jump-go "Go"))))
 
@@ -680,9 +672,9 @@ Ease of use features:
                     ("m" set-mark-command "mark" :bind nil)
                     ("q" nil "Quit")))
   (defhydra hydra-zoom (global-map "M-+")
-  "zoom"
-  ("g" text-scale-increase "in")
-  ("l" text-scale-decrease "out")))
+    "zoom"
+    ("g" text-scale-increase "in")
+    ("l" text-scale-decrease "out")))
 
 ;;Theme
 (load-theme 'tango-dark t)
