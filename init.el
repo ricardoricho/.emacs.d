@@ -47,7 +47,7 @@
 ;; Typed text delete selection
 (pending-delete-mode 1)
 ;; Indent with two spaces
-(setq tab-width 2)
+(setq-default tab-width 2)
 
 ;; Backups
 (setq
@@ -263,9 +263,9 @@ Ease of use features:
   :init
   (setq beacon-blink-duration 0.5)
   (setq beacon-size 80)
+  (setq beacon-color "#0a84ff")
   :config
-  (beacon-mode 1)
-  :bind (("C-c b b" . beacon-blink)))
+  (beacon-mode))
 
 ;; Company
 (use-package company
@@ -331,13 +331,7 @@ Ease of use features:
   (defadvice magit-status-setup-buffer (around magit-fullscreen activate)
     (window-configuration-to-register :magit-fullscreen)
     ad-do-it
-    (delete-other-windows))
-
-  (defun magit-quit-session ()
-    "Restores the previous window configuration and kills the magit buffer"
-    (interactive)
-    (kill-buffer)
-    (jump-to-register :magit-fullscreen)))
+    (delete-other-windows)))
 
 (use-package forge :after magit)
 (use-package github-review :after forge)
