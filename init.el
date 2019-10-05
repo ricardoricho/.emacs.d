@@ -352,17 +352,18 @@ Ease of use features:
 
 ;; Projectile
 (use-package projectile
-  :delight ""
+  :delight
   :init
   (setq projectile-completion-system 'ivy)
   :config
   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
   (setq projectile-switch-project-action
         (lambda ()
-          (magit-status-setup-buffer default-directory)
-          (projectile-find-file ivy-current-prefix-arg))))
+          (let ((git-dir (expand-file-name ".git" default-directory)))
+            (when (file-exists-p git-dir)
+              (magit-status-setup-buffer default-directory))
+            (projectile-find-file ivy-current-prefix-arg)))))
 
-;; Delight, persp-projectile take care.
 (use-package counsel-projectile
   :config
   (setq counsel-projectile-org-capture-templates
@@ -376,8 +377,23 @@ Ease of use features:
 
 (use-package perspective
   :config
-  (persp-mode)
-  (set-face-foreground 'persp-selected-face "#729fcf"))
+  (set-face-foreground 'persp-selected-face "#729fcf")
+
+  (defface persp-non-selected-face
+    '((t (:height 70 :foreground "gray70")))
+    "The face used for non current prespectives on the modeline."
+    :group 'perspective-mode)
+
+  (defun persp-format-name (name)
+    "Format the perspective name given by NAME for display in the modeline."
+    (let ((string-name (format "%s" name)))
+      (if (equal name (persp-name (persp-curr)))
+          (propertize string-name 'face 'persp-selected-face)
+        (propertize string-name
+                    'face 'persp-non-selected-face
+                    'local-map persp-mode-line-map
+                    'mouse-face 'mode-line-highlight))))
+  (persp-mode))
 
 (use-package persp-projectile
   :after (counsel-projectile perspective)
@@ -676,101 +692,105 @@ Ease of use features:
     ("l" text-scale-decrease "out")))
 
 ;;Theme
-(load-theme 'tango-dark t)
+(use-package tangotango-theme
+  :ensure t)
 
 ;; Mode line
+(use-package all-the-icons)
+
+(use-package hide-mode-line
+  :bind (("C-c h" . hide-mode-line-mode))
+  :load-path "~/.emacs.d/git/emacs-hide-mode-line")
+
+;; Helper function
+(defun shorten-directory (dir max-length &optional prefix)
+  "Show `DIR' name shorten to `MAX-LENGTH' characters.
+When `PREFIX' is given append prefix to result, default prefix is ..."
+  (let* ((path (abbreviate-file-name dir))
+         (path-length (length path))
+         (prefix (or prefix "..."))
+         (prefix-length (length prefix)))
+    (if (< path-length max-length)
+        path
+      (concat prefix
+              (substring path (- path-length
+                                 (- max-length prefix-length)))))))
+
+;; Custome mode-line faces
+
+(set-face-attribute 'mode-line nil
+                    :box "#0a84ff")
+
+(set-face-attribute 'mode-line-buffer-id nil
+                    :inherit 'mode-line
+                    :slant 'italic
+                    :foreground "OliveDrab3"
+                    :weight 'bold)
+(set-face-attribute 'mode-line-buffer-id-inactive nil
+                    :inherit 'mode-line-inactive
+                    :weight 'bold)
+
+(make-face 'mode-line-folder)
+(set-face-attribute 'mode-line-folder nil
+                    :width 'condensed
+                    :height 0.8)
+
+(make-face 'mode-line-flycheck)
+(set-face-attribute 'mode-line-flycheck nil
+                    :inherit 'flycheck-fringe-error
+                    :height 0.6)
+
+(make-face 'mode-line-position-face)
+(set-face-attribute 'mode-line-position-face nil
+                    :slant 'italic
+                    :height 0.9
+                    :weight 'normal)
+
+(make-face 'mode-line-minor-mode-face)
+(set-face-attribute 'mode-line-minor-mode-face nil
+                    :inherit 'mode-line-mode-face
+                    :height 80)
+
+(make-face 'mode-line-process-face)
+(set-face-attribute 'mode-line-process-face nil
+                    :inherit 'mode-line
+                    :foreground "#718c00")
+
 ;; Mode line setup
 ;; Based on: http://amitp.blogspot.com/2011/08/emacs-custom-mode-line.html
 (setq-default
  mode-line-format
- '(" %n "
+ '("%n"
    mode-line-client
-   ;; directory and buffer/file name
-   (:propertize (:eval (shorten-directory default-directory 20))
-                face mode-line-folder-face)
-   (:propertize "%b"
-                face mode-line-filename-face)
-   ;; Position, including warning for 80 columns
-   " "
-   (:propertize "%3l:" face mode-line-position-face)
-   (:propertize "%2c" face mode-line-position-face)
    " "
    ;; read-only or modified status
    (:eval
-    (cond (buffer-read-only
-           (propertize "ro" 'face 'mode-line-read-only-face))
-          ((buffer-modified-p)
-           (propertize "**" 'face 'mode-line-modified-face))
-          (t "  ")))
+    (cond
+     (buffer-read-only
+      (all-the-icons-fileicon "emacs"
+                              :face 'all-the-icons-blue))
+     ((buffer-modified-p)
+      (all-the-icons-faicon "exclamation-triangle"
+                            :face 'all-the-icons-red))
+     (t (all-the-icons-faicon "thumbs-up"
+                              :face 'all-the-icons-green))))
    " "
-   (:propertize mode-name
-                face mode-line-mode-face)
-   (:eval (propertize (format-mode-line minor-mode-alist)
-                      'face 'mode-line-minor-mode-face))
+   ;; Position
+   (:propertize "%3l:%2c " face mode-line-position-face)
+   ;; directory and buffer/file name
+   (:propertize (:eval (shorten-directory default-directory 20))
+                face mode-line-folder)
+   "%b "
+   (:eval (all-the-icons-icon-for-mode major-mode))
+   " "
+   (:eval (persp-mode-line))
+   " "
    (:propertize mode-line-process
                 face mode-line-process-face)
-   (global-mode-string global-mode-string)))
+   " "
+   (:propertize (flycheck-mode flycheck-mode-line)
+                face mode-line-flycheck)))
 
-;; Helper function
-(defun shorten-directory (dir max-length)
-  "Show `DIR' name shorten to `MAX-LENGTH' characters."
-  (let ((path (reverse (split-string (abbreviate-file-name dir) "/")))
-        (output ""))
-    (when (and path (equal "" (car path)))
-      (setq path (cdr path)))
-    (while (and path (< (length output) (- max-length 4)))
-      (setq output (concat (car path) "/" output))
-      (setq path (cdr path)))
-    (when path
-      (setq output (concat ".../" output)))
-    output))
-
-;; Extra mode line faces
-(make-face 'mode-line-read-only-face)
-(make-face 'mode-line-modified-face)
-(make-face 'mode-line-folder-face)
-(make-face 'mode-line-filename-face)
-(make-face 'mode-line-position-face)
-(make-face 'mode-line-mode-face)
-(make-face 'mode-line-minor-mode-face)
-(make-face 'mode-line-process-face)
-
-(set-face-background 'fringe "gray20")
-(set-face-attribute 'mode-line nil
-                    :foreground "gray60" :background "gray20"
-                    :inverse-video nil
-                    :box '(:line-width 1 :color "gray20" :style nil))
-(set-face-attribute 'mode-line-inactive nil
-                    :foreground "gray80" :background "gray40"
-                    :inverse-video nil
-                    :box '(:line-width 1 :color "gray40" :style nil))
-
-(set-face-attribute 'mode-line-read-only-face nil
-                    :inherit 'mode-line-face
-                    :foreground "#4271ae"
-                    :box '(:line-width 2 :color "#4271ae"))
-(set-face-attribute 'mode-line-modified-face nil
-                    :inherit 'mode-line-face
-                    :foreground "#c82829"
-                    :background "gray20"
-                    :box '(:line-width 1 :color "gray20"))
-(set-face-attribute 'mode-line-folder-face nil
-                    :inherit 'mode-line-face
-                    :foreground "gray50")
-(set-face-attribute 'mode-line-filename-face nil
-                    :inherit 'mode-line-face
-                    :foreground "#b8c12b"
-                    :weight 'bold)
-(set-face-attribute 'mode-line-mode-face nil
-                    :inherit 'mode-line-face
-                    :foreground "gray80")
-(set-face-attribute 'mode-line-minor-mode-face nil
-                    :inherit 'mode-line-mode-face
-                    :foreground "gray70"
-                    :height 80)
-(set-face-attribute 'mode-line-process-face nil
-                    :inherit 'mode-line-face
-                    :foreground "#718c00")
 
 ;; Set actions for startup
 (add-hook 'emacs-startup-hook 'toggle-frame-maximized)
