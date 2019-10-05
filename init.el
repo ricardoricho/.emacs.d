@@ -600,12 +600,12 @@ Ease of use features:
 
 ;; Ivy todo
 (use-package ivy-todo
- :load-path "~/.emacs.d/git/ivy-todo"
- :init
- (setq ivy-todo-file "~/.emacs.d/org-files/projects.org"
-       ivy-todo-guess-list nil)
- :bind ("C-c o t" . ivy-todo)
- :commands ivy-todo)
+  :load-path "~/.emacs.d/git/ivy-todo"
+  :init
+  (setq ivy-todo-file "~/.emacs.d/org-files/projects.org"
+        ivy-todo-guess-list nil)
+  :bind ("C-c o t" . ivy-todo)
+  :commands ivy-todo)
 
 (use-package multiple-cursors
   :bind (("M-0" . mc/rae-hydra/body))
