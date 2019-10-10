@@ -19,6 +19,8 @@
   (require 'use-package))
 
 (require 'bind-key)
+;; use-package
+(setq use-package-always-ensure t)
 (use-package delight)
 (use-package dash)
 
@@ -336,7 +338,7 @@ Ease of use features:
 (use-package forge :after magit)
 (use-package github-review :after forge)
 (use-package git-timemachine)
-
+(use-package gitconfig-mode)
 (use-package haml-mode)
 (use-package swift-mode)
 
