@@ -50,6 +50,8 @@
 (pending-delete-mode 1)
 ;; Indent with two spaces
 (setq-default tab-width 2)
+;; Do not split window vertically
+(setq split-height-threshold nil)
 
 ;; Backups
 (setq
@@ -70,6 +72,15 @@
 ;; Join lines
 (global-set-key (kbd "M-J") 'join-line)
 
+(defun rae-kill-current-file ()
+  "Kill current file if any and kill current buffer."
+  (interactive)
+  (let ((current-file (buffer-file-name)))
+    (when current-file
+      (save-buffer current-file)
+      (delete-file current-file))
+    (kill-buffer (current-buffer))))
+
 ;; Delete whitespaces
 (defun rae-kiill-word-or-whitespaces (arg)
   "Kill a word (`ARG')or remove whitespaces."
@@ -83,7 +94,11 @@
 ;; Unbindings
 (global-unset-key (kbd "C-z"))
 (global-unset-key (kbd "M-i"))
+(global-unset-key (kbd "M-q"))
 (global-unset-key (kbd "C-x C-b"))
+(global-unset-key (kbd "s-h"))
+(global-unset-key (kbd "s-p"))
+
 
 ;; Previous window
 (defun rae-previous-window ()
@@ -106,22 +121,22 @@
 
 ;; Auto-resize window
 (defadvice other-window (after rae-resize-window activate)
-  "Enlarge window to 80 columns, if is a `prog-mode' buffer."
+  "Enlarge window to 80 columns buffer."
   (let ((delta (- 80 (window-width))))
     (enlarge-window delta t)))
 
 ;; Move line (region sprex??) up
-(defun my-up-to-next-line ()
+(defun rae-up-to-next-line ()
   "Move up to next line."
   (interactive)
   (kill-line)
   (forward-line -1)
   (end-of-line)
   (yank))
-(global-set-key (kbd "C-c u") 'my-up-to-next-line)
+(global-set-key (kbd "C-c u") 'rae-up-to-next-line)
 
 ;; Toggle comment lines
-(defun my-toggle-comment-on-line ()
+(defun rae-toggle-comment-on-line ()
   "Comment and uncomment lines."
   (interactive)
   (if (use-region-p)
@@ -129,11 +144,11 @@
     (comment-or-uncomment-region (line-beginning-position)
                                  (line-end-position))))
 (global-unset-key (kbd "M-/"))
-(global-set-key (kbd "M-/") 'my-toggle-comment-on-line)
+(global-set-key (kbd "M-/") 'rae-toggle-comment-on-line)
 
 ;; Trailing whitespaces and save safetly taken from:
 ;; http://whattheemacsd.com/buffer-defuns.el-01.html
-(defun my-cleanup-buffer-safe ()
+(defun rae-cleanup-buffer-safe ()
   "Perform a bunch of safe operations on the whitespace content of a buffer.
 Does not indent buffer, because it is used for a 'before-save-hook', and that
 might be bad."
@@ -142,7 +157,7 @@ might be bad."
   (delete-trailing-whitespace)
   (set-buffer-file-coding-system 'utf-8))
 ;; Various superfluous white-space. Just say no.
-(add-hook 'before-save-hook 'my-cleanup-buffer-safe)
+(add-hook 'before-save-hook 'rae-cleanup-buffer-safe)
 
 ;; Kill whole line
 (global-unset-key (kbd "M-k"))
@@ -161,8 +176,10 @@ Ease of use features:
         (end (line-end-position arg)))
     (when mark-active
       (if (> (point) (mark))
-          (setq beg (save-excursion (goto-char (mark)) (line-beginning-position)))
-        (setq end (save-excursion (goto-char (mark)) (line-end-position)))))
+          (setq beg (save-excursion (goto-char (mark))
+                                    (line-beginning-position)))
+        (setq end (save-excursion (goto-char (mark))
+                                  (line-end-position)))))
     (if (eq last-command 'copy-line)
         (kill-append (buffer-substring beg end) (< end beg))
       (kill-ring-save beg end)))
@@ -174,14 +191,14 @@ Ease of use features:
 (global-set-key (kbd "C-c C-k") 'copy-line)
 
 ;; Reload file
-(defun my-reload-file ()
+(defun rae-reload-file ()
   "Reload current file by reverting current buffer."
   (interactive)
   (revert-buffer t t t)
   (message "Reload %s"
            (buffer-file-name (current-buffer))))
 (global-unset-key (kbd "M-R"))
-(global-set-key (kbd "M-R") 'my-reload-file)
+(global-set-key (kbd "M-R") 'rae-reload-file)
 
 ;; Smooth scroll
 (setq scroll-conservatively 111)
@@ -224,7 +241,8 @@ Ease of use features:
   ("J" (rae/set-transparency +10) "++ more")
   ("K" (rae/set-transparency -10) "-- less")
   ("=" (lambda (value) (interactive "nTransparency Value 0 - 100 :")
-         (set-frame-parameter (selected-frame) 'alpha value)) "Set to ?" :color blue))
+         (set-frame-parameter (selected-frame) 'alpha value))
+   "Set to ?" :color blue))
 (global-set-key (kbd "M-1") 'hydra-transparency/body)
 
 ;; Packages
@@ -246,9 +264,13 @@ Ease of use features:
 
 ;; Autocomplete packages for eshell.
 (use-package pcmpl-homebrew
-  :after eshell)
-(use-package pcmpl-args
-  :after eshell)
+  :after eshell
+  :config
+  ;; set hombrew imporant!
+  (setenv "HOMEBREW_NO_INSECURE_REDIRECT" "1")
+  (setenv "HOMEBREW_NO_ANALYTICS" "1")
+  (setenv "HOMEBREW_CASK_OPTS" "--require-sha"))
+(use-package pcmpl-args :after eshell)
 
 (use-package eshell-git-prompt
   :config (eshell-git-prompt-use-theme 'git-radar))
@@ -505,8 +527,8 @@ Ease of use features:
 (use-package rbenv
   :config
   (rbenv-use-global)
-  (add-hook 'ruby-mode-hook
-            (lambda  () (rbenv-use-corresponding))))
+  :hook
+  ((ruby-mode . rbenv-use-corresponding)))
 
 (use-package rubocop
   :hook ((ruby-mode . rubocop-mode)))
