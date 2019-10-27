@@ -332,6 +332,33 @@ Ease of use features:
   :config
   (ivy-mode t))
 
+(use-package ivy-posframe
+  :after (perspective)
+  :config
+  ;; Different command can use different display function.
+  (setq ivy-posframe-height-alist '((counsel-M-x . 20)
+                                    (t           . 10)))
+  ;; Different command can use different display function.
+  (setq ivy-posframe-display-functions-alist
+        '((swiper . nil)
+          (counsel-find-file . nil)
+          (ivy-switch-buffer . nil)
+          (complete-symbol . ivy-posframe-display-at-point)
+          ;; (ivy-switch-buffer . ivy-posframe-display-at-frame-bottom-left)
+          (t . ivy-posframe-display-at-frame-top-center)))
+
+  ;; Hack: set posframe parameters after emacs startup.
+  ;; Wait for persp-init current frame to persp parameters get value.
+  (add-hook 'emacs-startup-hook
+            (lambda ()
+              (setq ivy-posframe-parameters
+                    (list (cons 'alpha 85)
+                          (cons 'persp--hash (perspectives-hash))
+                          (cons 'persp--curr (persp-curr))
+                          (cons 'persp--last (persp-last))))))
+  (setq ivy-posframe-border-width 10)
+  (ivy-posframe-mode 1))
+
 (use-package helpful
   :bind
   (("C-h f" . #'helpful-callable)
@@ -716,15 +743,16 @@ Ease of use features:
     ("l" text-scale-decrease "out")))
 
 ;;Theme
-(use-package tangotango-theme
-  :ensure t)
+(use-package tangotango-theme)
 
 ;; Mode line
 (use-package all-the-icons)
 
 (use-package hide-mode-line
-  :bind (("C-c h" . hide-mode-line-mode))
-  :load-path "~/.emacs.d/git/emacs-hide-mode-line")
+  :load-path "~/.emacs.d/git/emacs-hide-mode-line"
+  :hook ((eshell-mode . hide-mode-line-mode))
+  :config
+  (global-set-key (kbd "C-c h") 'hide-mode-line-mode))
 
 ;; Helper function
 (defun shorten-directory (dir max-length &optional prefix)
