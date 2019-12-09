@@ -1,11 +1,14 @@
-;;; init.el -- Config file using el-get
+;;; init.el -- Config file using use-package
 ;;; Commentary:
-;; Pagckages once tryed and do no use anymore
-;; eyebrowes (windows)
-;; Dimmer focus current Buffer
-;;
-;; Packege to try
-;; yuya373/emacs-slack
+;;; Packages once tryed and do no use anymore
+;;; eyebrowes (windows)
+;;; Dimmer focus current Buffer
+;;;
+;;; Packege to try
+;;; yuya373/emacs-slack
+;;; https://github.com/raxod502/prescient.el
+;;; https://github.com/Silex/docker.el
+;;; https://github.com/raxod502/straight.el
 ;;; Code:
 (require 'package)
 (add-to-list 'package-archives
@@ -43,31 +46,31 @@
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 (show-paren-mode 1)
-(column-number-mode 1)
+
 ;; Turn off alarms
 (setq ring-bell-function 'ignore)
 ;; Typed text delete selection
 (pending-delete-mode 1)
 ;; Indent with two spaces
 (setq-default tab-width 2)
+(setq-default indent-tabs-mode nil)
 ;; Do not split window vertically
-(setq split-height-threshold nil)
+(setq-default split-height-threshold nil)
+(setq-default split-width-threshold 80)
 
 ;; Backups
 (setq
  backup-by-copying t
  backup-directory-alist '(("." . "~/.emacs.d/backups"))
  delete-old-versions t
- kept-new-versions 2
- kept-old-versions 1
  version-control t)
 
 ;; Change all prompts to y or n
-(fset 'yes-or-no-p 'y-or-n-p)
+(defalias 'yes-or-no-p 'y-or-n-p)
 
 ;; Winner mode
 ;; Restore window with C-c <left> (undo C-c <right>)
-(winner-mode 1)
+;; (winner-mode 1)
 
 ;; Join lines
 (global-set-key (kbd "M-J") 'join-line)
@@ -82,14 +85,14 @@
     (kill-buffer (current-buffer))))
 
 ;; Delete whitespaces
-(defun rae-kiill-word-or-whitespaces (arg)
+(defun rae-kill-word-or-whitespaces (arg)
   "Kill a word (`ARG')or remove whitespaces."
   (interactive "p")
   (let ((next-char (following-char)))
     (cond
      ((eql 32 next-char) (delete-horizontal-space))
      ('else (kill-word arg)))))
-(global-set-key (kbd "M-D") 'rae-kiill-word-or-whitespaces)
+(global-set-key (kbd "M-D") 'rae-kill-word-or-whitespaces)
 
 ;; Unbindings
 (global-unset-key (kbd "C-z"))
@@ -98,7 +101,6 @@
 (global-unset-key (kbd "C-x C-b"))
 (global-unset-key (kbd "s-h"))
 (global-unset-key (kbd "s-p"))
-
 
 ;; Previous window
 (defun rae-previous-window ()
@@ -186,8 +188,6 @@ Ease of use features:
   (kill-append "\n" nil)
   (beginning-of-line (or (and arg (1+ arg)) 2))
   (if (and arg (not (= 1 arg))) (message "%d lines copied" arg)))
-
-;; optional key binding
 (global-set-key (kbd "C-c C-k") 'copy-line)
 
 ;; Reload file
@@ -201,8 +201,8 @@ Ease of use features:
 (global-set-key (kbd "M-R") 'rae-reload-file)
 
 ;; Smooth scroll
-(setq scroll-conservatively 111)
-(setq scroll-margin 4)
+(setq scroll-conservatively 101)
+(setq scroll-margin 5)
 
 ;; Keyboard and locale
 ;; Locales
@@ -220,7 +220,7 @@ Ease of use features:
 
 ;;; Theme and fonts
 ;; Font size
-(set-frame-font "Hack-14" nil t)
+(set-frame-font "Hack-15" nil t)
 
 ;; Transparency
 ;; Taken from:
@@ -498,21 +498,29 @@ Ease of use features:
 
 ;; Smartparens
 (use-package smartparens
+  :hook ((prog-mode . smartparens-mode))
   :init
   (setq sp-highlight-pair-overlay nil
         sp-highlight-wrap-overlay nil
         sp-highlight-wrap-tag-overlay nil)
   :config
   (require 'smartparens-config)
-  (smartparens-global-mode t)
+  (global-unset-key (kbd "M-}"))
+  (global-unset-key (kbd "M-{"))
   (define-key smartparens-mode-map (kbd "<M-S-backspace>") 'sp-unwrap-sexp)
   (define-key smartparens-mode-map (kbd "M-F") 'sp-forward-sexp)
-  (define-key smartparens-mode-map (kbd "M-B") 'sp-backward-sexp))
+  (define-key smartparens-mode-map (kbd "M-B") 'sp-backward-sexp)
+  (define-key smartparens-mode-map (kbd "M-p") 'backward-paragraph)
+  (define-key smartparens-mode-map (kbd "M-n") 'forward-paragraph)
+  (define-key smartparens-mode-map (kbd "s-p s") 'sp-forward-slurp-sexp)
+  (define-key smartparens-mode-map (kbd "s-p b") 'sp-forward-barf-sexp))
 
 ;; Latex
 (use-package tex
   :ensure auctex)
 
+;; Config js
+(with-eval-after-load 'js-mode (setq js-indent-level 2))
 ;; Web-mode
 (use-package web-mode
   :mode "\\.ejs\\'"
@@ -645,8 +653,8 @@ Ease of use features:
     (interactive)
     (elfeed-db-load)
     (elfeed)
+    (elfeed-update))
     (delete-other-windows)
-    (elfeed-search-update))
   (define-key global-map (kbd "C-c F") 'elfeed-start))
 
 (use-package elfeed-org
@@ -701,9 +709,7 @@ Ease of use features:
      "Go to -"
      ("SPC" dumb-jump-go-prompt "Prompt")
      ("b" dumb-jump-back "Back")
-     ("d" counsel-dash "Dash")
      ("e" dumb-jump-go-prefer-external "Go external")
-     ("f" goto-line "Line")
      ("g" dumb-jump-go-prefer-external-other-window "Go external other window")
      ("l" dumb-jump-quick-look "Quick look")
      ("o" dumb-jump-go-other-window "Other window")
